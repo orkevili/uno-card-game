@@ -1,0 +1,4 @@
+matplotlib
+mypy
+pdoc3
+pytest
