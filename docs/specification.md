@@ -12,5 +12,4 @@ Ha lapfelhúzós kártya kerül lerakásra, a program, automatikusan "felhúzza"
 - **Játékos** metódusok: kártya hozzáadás, kártya lerakás, van-e kártyája, amit le tud rakni?
 - **Játék** metódusok: játékos hozzáadása, kártya húzás, kártya lerakás, játékosok kártyával, következő játékos, robot(magától tesz le/húz fel kártyákat), kör megforditása
 ## Plot
-- Megjeleniteni, hogy egy adott játékmenetben melyik szinből hány kártyát raktak le
-- Eltárolni json fájlba, hogy adott nevű játékos hány játékot nyert, majd ebből az adatokat plotolni
+- A játék során folyamatosan logolni, hogy kinek hány lapja van, a végén egy vonaldiagrammal megjeleniteni, melyik játékosnak hogyan változtak a lapjai.
