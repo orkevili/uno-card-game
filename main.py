@@ -3,9 +3,7 @@ Programming 1 project by: Örkényi Vilmos
 
 Summary: UNO card game.
 """
-from uno import Card, Pack, Player, Game
-
-
+from uno import Game
 
 
 if __name__ == "__main__":

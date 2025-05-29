@@ -3,7 +3,7 @@ from random import shuffle
 
 CARD_DATA = "deck.json"
 
-def load_card_data(file: str):
+def load_card_data(file: str = CARD_DATA):
     """Load cards from json file(CARD_DATA)"""
     with open(file, "r") as f:
         data = json.load(f)
@@ -32,7 +32,7 @@ class Card:
     
     def get_colors(self) -> list:
         """Loads the color variants from json file(CARD_DATA)"""
-        data = load_card_data(CARD_DATA)
+        data = load_card_data()
         return data['colors']
 
 
@@ -84,7 +84,7 @@ class Pack:
         Returns:
             List of cards that makes a pack.
         """
-        data = load_card_data(CARD_DATA)
+        data = load_card_data()
         colors = data.get("colors")
         number_cards = data.get("number_cards")
         action_cards = data.get("action_cards")
@@ -97,7 +97,7 @@ class Pack:
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self) -> None:
+    def make_shuffled_pack(self) -> "Pack":
         """Makes a new pack which is shuffled."""
         self.make_pack()
         return shuffle(self.cards)
