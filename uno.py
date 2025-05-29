@@ -21,6 +21,11 @@ class Card:
     def __repr__(self):
         return f"Card({self.color}, {self.type})"
     
+    def __eq__(self, other: "Card"):
+        if self.color == other.color and self.type == other.type:
+            return True
+        return False
+    
     def __mul__(self, n):
         """Returns multiple pieces of a card"""
         return [Card(self.color, self.type) for _ in range(n)]
