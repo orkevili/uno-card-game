@@ -1,0 +1,23 @@
+{
+     "colors": ["red", "green", "blue", "yellow"],
+     "number_cards":{
+        "0": 1,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+    },
+     "action_cards": {
+        "types": ["skip", "reverse", "draw_2"],
+        "count": 2
+     },
+     "wild_cards": {
+        "wild": 4,
+        "wild_draw_4": 4
+     }
+ }
