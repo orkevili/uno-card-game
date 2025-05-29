@@ -12,3 +12,6 @@ def test_pack():
 def test_get_starter_card():
     pack.make_pack()
     assert pack.get_starter_card()
+
+    pack.make_shuffled_pack()
+    assert pack.get_starter_card()

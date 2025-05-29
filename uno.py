@@ -36,7 +36,7 @@ class Card:
         return data['colors']
 
 
-    def ask_color(self):
+    def ask_color(self) -> None:
         """Asks a color for wild or wild_draw_4 card"""
         valid_color = False
         if self.type in ["wild", "wild_draw_4"]:
@@ -77,7 +77,7 @@ class Pack:
     def __str__(self):
         return f"{self.cards}"
 
-    def make_pack(self):
+    def make_pack(self) -> None:
         """Makes a pack from cards
         Args:
             cards
@@ -124,13 +124,22 @@ class Player:
     def __repr__(self):
         return f"Player({self.name})"
     
-    def add_card(self, card:Card) -> None:
+    def add_card(self, card: Card) -> None:
         """Adds a card to the players deck."""
-        pass
+        self.deck.append(card)
     
-    def has_card_to_place_on(self, card: Card) -> bool:
+    def remove_card(self, card: Card) -> None:
+        """Removes a card from the players deck."""
+        for i in range(len(self.deck)-1):
+            if self.deck[i] == card:
+                self.deck.pop(i)
+    
+    def has_card_to_place_on(self, other: Card) -> bool:
         """Tells if the player has any card to place on another card"""
-        pass
+        for card in self.deck:
+            if card.can_place_on(other):
+                return True
+        return False
 
 class Game:
     def __init__(self):
