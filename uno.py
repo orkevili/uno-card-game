@@ -5,7 +5,7 @@ CARD_DATA = "deck.json"
 
 def load_card_data(file: str):
     """Load cards from json file(CARD_DATA)"""
-    with open(CARD_DATA, "r") as f:
+    with open(file, "r") as f:
         data = json.load(f)
     return data
 
@@ -25,9 +25,9 @@ class Card:
         """Returns multiple pieces of a card"""
         return [Card(self.color, self.type) for _ in range(n)]
     
-    def get_colors(file: str) -> list:
+    def get_colors(self) -> list:
         """Loads the color variants from json file(CARD_DATA)"""
-        data = load_card_data(file)
+        data = load_card_data(CARD_DATA)
         return data['colors']
 
 
@@ -40,7 +40,11 @@ class Card:
             for idx, color in enumerate(colors):
                 print(f"{idx+1}; {color}")
             while not valid_color:
-                selected_idx = int(input("Number: "))
+                try:
+                    selected_idx = int(input("Number: "))
+                except ValueError:
+                    print("Enter a valid number.")
+                    continue
                 if selected_idx > 0 and selected_idx <= len(colors):
                     valid_color = True
                 else:
@@ -56,6 +60,7 @@ class Card:
         if self.type in ["wild", "wild_draw_4"]:
             return True
         return False
+
 
 class Pack:
     def __init__(self):
@@ -101,10 +106,6 @@ class Pack:
             except ValueError:
                 continue
 
-pack = Pack()
-pack.make_shuffled_pack()
-print(pack)
-print(pack.get_starter_card())
 
 class Player:
     def __init__(self, name):
@@ -138,7 +139,7 @@ class Game:
             last_card: shows the last placed card, starter card in the beginning
         """
         self.pack = Pack()
-        self.pack.shuffle_pack()
+        self.pack.make_shuffled_pack()
         self.round = 1
         self.playernow = 0
         self.clockwise = True
@@ -151,7 +152,7 @@ class Game:
     def __repr__(self):
         pass
 
-    def add_player(self, name: Player) -> None:
+    def add_player(self, name: str) -> None:
        """Adds player to game"""
        pass
     

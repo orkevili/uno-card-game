@@ -6,11 +6,11 @@ def test_making_card():
     cards.append(Card("blue", 2))
     cards.append(Card("yellow", "draw_two"))
     cards.append(Card("wild", "wild"))
-    for card in cards:
-        print(card)
-        if card.type == "wild":
-            card.ask_color()
-            print(card)
+    print(cards)
+
+def test_ask_color():
+    wild = Card("wild", "wild")
+    wild.ask_color()
         
 def test_card_can_place_on_other():
     print("red(8) on red(wild)")
@@ -23,6 +23,7 @@ def test_card_can_place_on_other():
     print(Card("blue", "6").can_place_on(Card("wild_draw_4", "wild_draw_4")))
 
 test_making_card()
+test_ask_color()
 test_card_can_place_on_other()
 
 
@@ -38,6 +39,6 @@ def test_make_shuffled_pack():
     print(f"Size of pack: {len(pack)}")
     print(f"Starter card: {pack.get_starter_card()}")
 
-test_make_pack()
-print("--------------")
-test_make_shuffled_pack()
+#test_make_pack()
+#print("--------------")
+#test_make_shuffled_pack()

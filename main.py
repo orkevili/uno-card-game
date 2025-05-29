@@ -3,7 +3,7 @@ Programming 1 project by: Örkényi Vilmos
 
 Summary: UNO card game.
 """
-from logic import Card, Pack, Player, Game
+from uno import Card, Pack, Player, Game
 
 
 
