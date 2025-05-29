@@ -155,24 +155,35 @@ class Game:
         self.pack = Pack()
         self.pack.make_shuffled_pack()
         self.round = 1
-        self.playernow = 0
         self.clockwise = True
         self.players = []
+        self.playernow = 0
         self.last_card = self.pack.get_starter_card()
 
     def __str__(self):
-         pass
+        return(
+            f"Round: {self.round},"
+            f"Players: {[p.name for p in self.players]},"
+            f"in turn: {self.players[self.playernow] if self.players else None}\n,"
+            f"last card: {self.last_card}"
+            f"remaining cards in pack: {len(self.pack)}"
+        )
 
     def __repr__(self):
-        pass
+        return f"Game({self.pack}, Round: {self.round}\nClockwise: {self.clockwise}, \n{self.players}, \nPlayer now: {self.playernow}, \nLast card: {self.last_card})"
 
     def add_player(self, name: str) -> None:
-       """Adds player to game"""
-       pass
+        """Adds player to the game, and gives 7 card to the player's deck"""
+        self.players.append(Player(name))
+        for _ in range(7):
+            card = self.pack.cards.pop(0)
+            self.players[-1].add_card(card)
     
     def pull_card(self, name: Player) -> None:
         """Pulls a card for the player from the pack"""
-        pass
+        card = self.pack.cards.pop(0)
+        name.add_card(card)
+        print(f"--{name.name}-- pulled: {card} --")
     
     def drop_card(self, name: Player) -> None:
         """Drops the choosen card from the player"""
@@ -183,12 +194,21 @@ class Game:
         pass
 
     def next_player(self) -> None:
-       """Changes current player to the next in line"""
-       pass
+        """Changes current player to the next in line and manages round count"""
+        player_count = len(self.players)
+        if self.playernow + 1 <= player_count - 1:
+            self.playernow += 1
+        else:
+            self.playernow = 0
+            self.round += 1
 
     def players_with_card(self) -> int:
-       """Returns a number of players with card"""
-       pass
+        """Returns a number of players with card"""
+        player_count = 0
+        for player in self.players:
+            if len(player.deck) > 0:
+                player_count += 1
+        return player_count
 
     def run(self):
        """Game process this is where the magic happens."""
