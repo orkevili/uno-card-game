@@ -20,9 +20,6 @@ def test_pull_card():
     game.pull_card(Player("test"))
     assert len(game.pack) == 99
 
-def test_drop_card():
-    pass
-
 def test_next_player():
     game.add_player("test")
     game.add_player("test2")

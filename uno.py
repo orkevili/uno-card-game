@@ -187,11 +187,55 @@ class Game:
     
     def drop_card(self, name: Player) -> None:
         """Drops the choosen card from the player"""
-        pass
-    
+        good_card = False
+        while not good_card:
+            try:
+                card_idx = int(input("Which you want to drop? ")) - 1
+                card = name.deck[card_idx]
+                if card.can_place_on(self.last_card):
+                    match(card.type):
+                        case "wild":
+                            card.ask_color()
+                        case "wild_draw_4":
+                            card.ask_color()
+                            self.to_pull = 4
+                        case "draw_2":
+                            self.to_pull = 2
+                        case "skip":
+                            self.skip = True
+                        case "reverse":
+                            if self.clockwise:
+                                self.clockwise = False
+                            else:
+                                self.clockwise = True
+                    good_card = True
+                    dropped_card = name.deck.pop(card_idx)
+                    self.last_card = dropped_card
+                    print(f"--{name.name}-- dropped: {dropped_card} --")
+                else: print(f"Can't place {card} on {self.last_card}")
+            except Exception as e:
+                print("Invalid card number.", e)
+
     def turn(self, name: Player) -> None:
         """Gives a player a choice to pull or drop a card"""
-        pass
+        print(f"--{name}--")
+        for idx, card in enumerate(name.deck):
+            print(f"{idx+1}. {card}")
+        valid_command = False
+        while not valid_command:
+            action = input("pull or drop? ")
+            if action in ["pull", "drop"]:
+                valid_command = True
+            else:
+                print("Invalid command.")
+        if action == "pull":
+            self.pull_card(name)
+        else:
+            if name.has_card_to_place_on(self.last_card):
+                self.drop_card(name)    
+            else:
+                print(f"Can not place any card on {self.last_card}, pull a card.")
+                self.pull_card(name)
 
     def next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
@@ -211,5 +255,30 @@ class Game:
         return player_count
 
     def run(self):
-       """Game process this is where the magic happens."""
-       pass
+        """Game process this is where the magic happens."""
+        print("- UNO - game starting...")
+        player_count = int(input("How many players are gonna play? "))
+        for i in range(player_count):
+            print(f"{i+1}; player")
+            name = input("name: ")
+            self.add_player(Player(name))
+
+        if len(self.players) == 1:
+            #TODO add bot player
+            pass
+
+        while len(self.pack) > 0 and self.players_with_card() > 1:
+            print(self)
+            if self.to_pull > 0:
+                for i in range(self.to_pull):
+                    self.pull_card(self.players[self.playernow])
+                self.to_pull = 0
+                self.next_player()
+            if self.skip:
+                self.skip = False
+                self.next_player()
+            else:
+                self.turn(self.players[self.playernow])
+                self.next_player()
+        winners = [p.name for p in self.players if not p.deck]
+        print(f"Game over.\nWinner: {winners[0] if winners else None}")
