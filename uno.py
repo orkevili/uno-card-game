@@ -3,6 +3,7 @@ from random import shuffle
 
 CARD_DATA = "deck.json"
 START_CARDS = 7
+BOT_NAME = "bot_Bob"
 
 def load_card_data(file: str = CARD_DATA):
     """Load cards from json file(CARD_DATA)"""
@@ -114,15 +115,20 @@ class Pack:
 
 
 class Player:
-    def __init__(self, name):
-        """Need a name that will be used for the player during the game."""
+    def __init__(self, name: str, is_bot: bool = False):
+        """Need a name that will be used for the player during the game, is_bot tells if the player is going to be a bot player or not."""
         self.name = name
         self.deck = []
+        self.is_bot = is_bot
+
+    def __len__(self) -> int:
+        """Return the length of the players name"""
+        return len(self.name)
     
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name}"
     
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"Player({self.name})"
     
     def add_card(self, card: Card) -> None:
@@ -142,8 +148,8 @@ class Player:
                 return True
         return False
     
-    def get_colors_in_deck(self):
-        """Returns what colors are in the playes deck"""
+    def get_colors_in_deck(self) -> list:
+        """Returns a list with colors which are in the players deck"""
         colors = {}
         color_palette = get_colors()
         for color in color_palette:
@@ -154,7 +160,8 @@ class Player:
         sorted_colors = sorted(colors.items(), key=lambda item: item[1], reverse=True)
         return sorted_colors
     
-    def get_color_with_most_cards(self):
+    def get_color_with_most_cards(self) -> str:
+        """Returns the most often occurring color in the players deck"""
         return self.get_colors_in_deck()[0][0]
 
     
@@ -186,8 +193,8 @@ class Game:
             f"Round: {self.round}, "
             f"in turn: {self.players[self.playernow] if self.players else None}, "
             f"remaining cards in pack: {len(self.pack)}\n"
-            f"last card: {self.last_card}\n"
             f"To pull: {self.to_pull}, Skip: {self.skip}, Clockwise: {self.clockwise}\n"
+            f"last card: {self.last_card}\n"
             f"----------------------------------"
         )
     
@@ -199,6 +206,12 @@ class Game:
         """Adds player to the game, and gives 7 card to the player's deck"""
         self.players.append(Player(name))
         self.give_starting_deck()
+
+    def add_bot(self) -> None:
+        """Adds a bot to the game"""
+        bot_player = Player(BOT_NAME, True)
+        self.players.append(bot_player)
+        self.give_starting_deck()
     
     def give_starting_deck(self, piece=START_CARDS):
         for _ in range(piece):
@@ -209,9 +222,10 @@ class Game:
         """Pulls a card for the player from the pack"""
         card = self.pack.cards.pop(0)
         name.add_card(card)
-        print(f"--{name.name}-- pulled: {card} --")
+        print(f"-- {name.name} -- pulled: {card} --")
 
-    def match_type(self, card: Card, name: Player = None):
+    def match_type(self, card: Card, name: Player) -> None:
+        """Checks the type of the card and makes the required changes in the Game."""
         match(card.type):
             case "draw_2":
                 self.to_pull = 2
@@ -223,13 +237,13 @@ class Game:
                 else:
                     self.clockwise = True
             case "wild":
-                if name:
+                if name.is_bot:
                     color = name.get_color_with_most_cards()
                     card.color = color
                 else:
                     card.ask_color()
             case "wild_draw_4":
-                if name:
+                if name.is_bot:
                     color = name.get_color_with_most_cards()
                     card.color = color
                 else:
@@ -244,30 +258,55 @@ class Game:
                 card_idx = int(input("Which you want to drop? ")) - 1
                 card = name.deck[card_idx]
                 if card.can_place_on(self.last_card):
-                    self.match_type(card)
+                    self.match_type(card, name)
                     good_card = True
                     dropped_card = name.deck.pop(card_idx)
                     self.last_card = dropped_card
-                    print(f"--{name.name}-- dropped: {dropped_card} --")
+                    print(f"-- {name.name} - dropped: {dropped_card} --")
                 else: print(f"Can't place {card} on {self.last_card}")
             except Exception as e:
                 print("Invalid card number.", e)
 
-    def add_bot(self) -> None:
-        """Adds a bot to the game if only one player going to play"""
-        self.players.append(Player("bot"))
-        self.give_starting_deck()
-
     def drop_card_bot(self, name: Player, card_idx) -> None:
+        """Drops the card for the bot player"""
         dropped_card = name.deck.pop(card_idx)
         self.match_type(dropped_card, name)
         self.last_card = dropped_card
-        print(f"--{name.name}-- dropped: {dropped_card} --")
+        print(f"-- {name.name} - dropped: {dropped_card} --")
+
+    def bot_choose_card_to_drop(self, name: Player) -> int:
+        """Returns one cards index in the players deck to drop."""
+        good_cards = {
+            "number": {},
+            "action": {},
+            "wild": {}
+        }
+        for idx, card in enumerate(name.deck):
+            if card.can_place_on(self.last_card):
+                match(card.type):
+                    case "skip"|"reverse"|"draw_2":
+                        good_cards["action"][idx] = card
+                    case "wild"|"wild_draw_4":
+                        good_cards["wild"][idx] = card
+                    case _:
+                        try:
+                            int(card.type)
+                            good_cards["number"][idx] = card
+                        except Exception as e:
+                            print("Something went wrong.", e)
+        if good_cards['number']:
+            return next(iter(good_cards['number']))
+        if good_cards['action']:
+            return next(iter(good_cards['action']))
+        else:
+             return next(iter(good_cards['wild']))
+
 
     def turn(self, name: Player) -> None:
         """Gives a player a choice to pull or drop a card"""
-        if name.name != "bot":        
-            print(f"--{name}--")
+        decor = 3*len(name)*'-'
+        print(f"In turn:\n{decor}\n{' '*len(name)}{name}\n{decor}")
+        if not name.is_bot:        
             for idx, card in enumerate(name.deck):
                 print(f"{idx+1}. {card}")
             valid_command = False
@@ -283,20 +322,14 @@ class Game:
                 if name.has_card_to_place_on(self.last_card):
                     self.drop_card(name)    
                 else:
-                    print(f"Can not place any card on {self.last_card}, pull a card.")
+                    print(f"Can't place any card on {self.last_card}, pull a card.\n")
                     self.pull_card(name)
         else:
             if name.has_card_to_place_on(self.last_card):
-                hand = name.deck
-                print(hand)
-                for i in range(len(name.deck) - 1):
-                    if hand[i].can_place_on(self.last_card):
-                        if hand[i].type in ["wild", "wild_draw_4"]:
-                            hand[i].color = name.get_colors_in_deck()[0][0]
-                        self.drop_card_bot(name, i)
-                        break
+                idx = self.bot_choose_card_to_drop(name)
+                self.drop_card_bot(name, idx)
             else:
-                print("A bot nem tud kártyát rakni, húz egyet")
+                print(f"{name} can't place any card on {self.last_card}, pull one.")
                 self.pull_card(name)
 
     def next_player(self) -> None:
@@ -307,6 +340,7 @@ class Game:
         else:
             self.playernow = 0
             self.round += 1
+        #TODO reverse next player method
 
     def players_with_card(self) -> int:
         """Returns a number of players with card"""
@@ -316,16 +350,16 @@ class Game:
                 player_count += 1
         return player_count
 
-    def run(self):
+    def run(self) -> None:
         """Game process this is where the magic happens."""
         is_number = False
         while not is_number:
             player_count = input("How many players are gonna play? ")
             try:
                 player_count = int(player_count)
-                if player_count > 0:
+                if player_count > 0 and player_count < 5:
                     is_number = True
-                else: print("Number has to be greater than 0")
+                else: print("Number has to be greater than 0 and maximum 4")
             except:
                 print("You need to enter a valid number to continue.")
 
@@ -337,7 +371,7 @@ class Game:
             self.add_bot()
 
         while len(self.pack) > 0 and self.players_with_card() > 1:
-            print(self)
+            print(f"\n{self}\n{[p.deck for p in self.players]}")
             if self.to_pull > 0:
                 for i in range(self.to_pull):
                     self.pull_card(self.players[self.playernow])
@@ -350,7 +384,9 @@ class Game:
                 self.turn(self.players[self.playernow])
                 self.next_player()
         winners = [p.name for p in self.players if not p.deck]
-        print(f"Game over. Winner is: {winners[0] if winners else None}")
+        print(f"\nGame over. Winner is: {winners[0] if winners else None}")
 
-game = Game()
-game.run()
+
+if __name__ == "__main__":
+    game = Game()
+    game.run()
