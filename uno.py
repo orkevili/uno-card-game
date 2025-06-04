@@ -186,6 +186,7 @@ class Game:
         self.to_pull = 0
         self.skip = False
         self.last_card = self.pack.get_starter_card()
+        self.winners = []
 
     def __str__(self):
         return(
@@ -201,6 +202,9 @@ class Game:
     def __repr__(self):
         return f"Game({self.pack}, Round: {self.round}\nClockwise: {self.clockwise}, \n{self.players}, \nPlayer now: {self.playernow}, \nLast card: {self.last_card}\n To pull: {self.to_pull}, Skip: {self.skip})"
 
+    def get_player_count(self):
+        """Returns how many players are in game"""
+        return len(self.players)
 
     def add_player(self, name: str) -> None:
         """Adds player to the game, and gives 7 card to the player's deck"""
@@ -212,6 +216,19 @@ class Game:
         bot_player = Player(BOT_NAME, True)
         self.players.append(bot_player)
         self.give_starting_deck()
+
+    def add_players(self, count) -> None:
+        """You have to enter every players name, if only one will be added, then automatically adds a bot to the game.
+        Args:
+            count:
+                how many players will be added to the game
+        """
+        for i in range(count):
+            print(f"{i+1}; player")
+            name = input("name: ")
+            self.add_player(Player(name))
+        if len(self.players) < 2:
+            self.add_bot()
     
     def give_starting_deck(self, piece=START_CARDS):
         for _ in range(piece):
@@ -236,6 +253,9 @@ class Game:
                     self.clockwise = False
                 else:
                     self.clockwise = True
+                #TODO reverse skip when only 2 players
+                if self.get_player_count() == 2:
+                    self.next_player()
             case "wild":
                 if name.is_bot:
                     color = name.get_color_with_most_cards()
@@ -267,7 +287,7 @@ class Game:
             except Exception as e:
                 print("Invalid card number.", e)
 
-    def drop_card_bot(self, name: Player, card_idx) -> None:
+    def drop_card_by_idx(self, name: Player, card_idx) -> None:
         """Drops the card for the bot player"""
         dropped_card = name.deck.pop(card_idx)
         self.match_type(dropped_card, name)
@@ -327,7 +347,7 @@ class Game:
         else:
             if name.has_card_to_place_on(self.last_card):
                 idx = self.bot_choose_card_to_drop(name)
-                self.drop_card_bot(name, idx)
+                self.drop_card_by_idx(name, idx)
             else:
                 print(f"{name} can't place any card on {self.last_card}, pull one.")
                 self.pull_card(name)
@@ -335,12 +355,18 @@ class Game:
     def next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
         player_count = len(self.players)
-        if self.playernow + 1 <= player_count - 1:
-            self.playernow += 1
+        if self.clockwise:
+            if self.playernow + 1 <= player_count - 1:
+                self.playernow += 1
+            else:
+                self.playernow = 0
+                self.round += 1
         else:
-            self.playernow = 0
-            self.round += 1
-        #TODO reverse next player method
+            if self.playernow - 1 < 0:
+                self.playernow = player_count - 1
+                self.round += 1
+            else:
+                self.playernow -= 1    
 
     def players_with_card(self) -> int:
         """Returns a number of players with card"""
@@ -350,43 +376,34 @@ class Game:
                 player_count += 1
         return player_count
 
-    def run(self) -> None:
+    def run(self, player_count) -> None:
         """Game process this is where the magic happens."""
-        is_number = False
-        while not is_number:
-            player_count = input("How many players are gonna play? ")
-            try:
-                player_count = int(player_count)
-                if player_count > 0 and player_count < 5:
-                    is_number = True
-                else: print("Number has to be greater than 0 and maximum 4")
-            except:
-                print("You need to enter a valid number to continue.")
-
-        for i in range(player_count):
-            print(f"{i+1}; player")
-            name = input("name: ")
-            self.add_player(Player(name))
-        if len(self.players) == 1:
-            self.add_bot()
+        self.add_players(player_count)
 
         while len(self.pack) > 0 and self.players_with_card() > 1:
-            print(f"\n{self}\n{[p.deck for p in self.players]}")
+            current_player = self.players[self.playernow]
+            print(self)
             if self.to_pull > 0:
                 for i in range(self.to_pull):
-                    self.pull_card(self.players[self.playernow])
+                    self.pull_card(current_player)
                 self.to_pull = 0
                 self.next_player()
+                continue
             if self.skip:
                 self.skip = False
                 self.next_player()
-            else:
-                self.turn(self.players[self.playernow])
-                self.next_player()
-        winners = [p.name for p in self.players if not p.deck]
-        print(f"\nGame over. Winner is: {winners[0] if winners else None}")
+                continue
+            self.turn(current_player)
+            self.next_player()
+            if len(current_player.deck) < 1:
+                self.players.remove(current_player)
+                self.winners.append(current_player)
+                print(current_player, "ran out of cards, left the game.")
+
+        print(f"\nGame over. Winner(s): {[f"{idx+1}: {player}" for idx, player in enumerate(self.winners)]}")
 
 
 if __name__ == "__main__":
+    count = int(input("player count: "))
     game = Game()
-    game.run()
+    game.run(count)
