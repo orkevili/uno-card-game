@@ -1,6 +1,8 @@
-import json
+import json, os
 from random import shuffle
+from plot import plot_game
 
+LOG_FILE = "game_log.json"
 CARD_DATA = "deck.json"
 START_CARDS = 7
 BOT_NAME = "bot_Bob"
@@ -59,7 +61,6 @@ class Card:
                     print("Invalid number, try again.")
         self.color = colors[selected_idx-1]
 
-    
     def can_place_on(self, other: "Card") -> bool:
         """Tells if the card can be placed on another card"""
         if self.color == other.color or self.type == other.type:
@@ -122,8 +123,8 @@ class Player:
         self.is_bot = is_bot
 
     def __len__(self) -> int:
-        """Return the length of the players name"""
-        return len(self.name)
+        """Returns how much cards the player has."""
+        return len(self.deck)
     
     def __str__(self) -> str:
         return f"{self.name}"
@@ -205,6 +206,20 @@ class Game:
     def get_player_count(self):
         """Returns how many players are in game"""
         return len(self.players)
+    
+    def export_game_info(self, filename: str = LOG_FILE):
+        player_info = {self.round: {str(el.name): len(el) for el in self.players}}
+        if os.path.exists(filename):
+            with open(filename, "r") as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = {}
+        else:
+            data = {}
+        data.update(player_info)
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=4)
 
     def add_player(self, name: str) -> None:
         """Adds player to the game, and gives 7 card to the player's deck"""
@@ -242,7 +257,13 @@ class Game:
         print(f"-- {name.name} -- pulled: {card} --")
 
     def match_type(self, card: Card, name: Player) -> None:
-        """Checks the type of the card and makes the required changes in the Game."""
+        """Checks the type of the card and makes the required changes in the variables of the class.
+            Args:
+                card:
+                    the card what the player drops
+                name:
+                    needs the player to check if is it a bot, so it can automatically select a color for wild cards
+        """
         match(card.type):
             case "draw_2":
                 self.to_pull = 2
@@ -253,7 +274,6 @@ class Game:
                     self.clockwise = False
                 else:
                     self.clockwise = True
-                #TODO reverse skip when only 2 players
                 if self.get_player_count() == 2:
                     self.next_player()
             case "wild":
@@ -288,14 +308,20 @@ class Game:
                 print("Invalid card number.", e)
 
     def drop_card_by_idx(self, name: Player, card_idx) -> None:
-        """Drops the card for the bot player"""
+        """Drops a card by index in the player's deck
+            Args:
+                name:
+                    A player who drops the card.
+                card_idx:
+                    The index of the choosen card in the players deck.
+        """
         dropped_card = name.deck.pop(card_idx)
         self.match_type(dropped_card, name)
         self.last_card = dropped_card
         print(f"-- {name.name} - dropped: {dropped_card} --")
 
     def bot_choose_card_to_drop(self, name: Player) -> int:
-        """Returns one cards index in the players deck to drop."""
+        """Returns one card's index in the player's deck to drop."""
         good_cards = {
             "number": {},
             "action": {},
@@ -366,7 +392,7 @@ class Game:
                 self.playernow = player_count - 1
                 self.round += 1
             else:
-                self.playernow -= 1    
+                self.playernow -= 1
 
     def players_with_card(self) -> int:
         """Returns a number of players with card"""
@@ -381,6 +407,8 @@ class Game:
         self.add_players(player_count)
 
         while len(self.pack) > 0 and self.players_with_card() > 1:
+            self.export_game_info()
+            plot_game(LOG_FILE)
             current_player = self.players[self.playernow]
             print(self)
             if self.to_pull > 0:

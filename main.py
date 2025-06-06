@@ -3,7 +3,8 @@ Programming 1 project by: Örkényi Vilmos
 
 Summary: UNO card game.
 """
-from uno import Game
+import os
+from uno import *
     
 def get_player_count():
     is_number = False
@@ -18,7 +19,12 @@ def get_player_count():
             print("You need to enter a valid number to continue.")
     return player_count
 
+def clear_log(filename: str = LOG_FILE):
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
+
 if __name__ == "__main__":
+    clear_log()
     game = Game()
     count = get_player_count()
     game.run(count)
