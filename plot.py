@@ -19,24 +19,25 @@ def plot_game(filename: str):
             player_cards.append(cards)
 
     player_count = len(players)//len(rounds)
-    player1 = player_cards[::2]
-    player2 = player_cards[1::2]
-    player3 = player_cards[1::3]
-    #player4 = player_cards[::4]
+    player1 = player_cards[::player_count]
+    player2 = player_cards[1::player_count]
+    player3 = player_cards[2::player_count]
+    player4 = player_cards[3::player_count]
 
-    names = [name for name in players]
-    x = np.arange(len(rounds))
-    width = 0.2
-    fig, ax = plt.subplots(layout='constrained')
-    ax.bar(x-0.1, player1, width)
-    ax.bar(x+0.1, player2, width)
+    fig, ax = plt.subplots(layout='tight')
+    ax.plot(player1)
+    ax.plot(player2)
     if player_count == 3:
-        ax.bar(x+0.3, player3, width)
+        ax.plot(player3)
+    if player_count == 4:
+        ax.plot(player3)
+        ax.plot(player4)
+
     ax.set_xlabel("Rounds")
     ax.set_ylabel("Cards")
     ax.set_title("Cards by round")
-    #ax.grid()
-    fig.legend(names)
+    ax.grid()
+    fig.legend(players)
     fig.savefig("stat.jpg")
 
 if __name__ == "__main__":

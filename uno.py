@@ -1,5 +1,5 @@
 import json, os
-from random import shuffle
+from random import shuffle, choice
 from plot import plot_game
 
 LOG_FILE = "game_log.json"
@@ -180,7 +180,7 @@ class Game:
         """
         self.pack = Pack()
         self.pack.make_shuffled_pack()
-        self.round = 1
+        self.round = 0
         self.players = []
         self.playernow = 0
         self.clockwise = True
@@ -249,6 +249,12 @@ class Game:
         for _ in range(piece):
             card = self.pack.cards.pop(0)
             self.players[-1].add_card(card)
+
+    def get_starter_player(self) -> int:
+        """Return the index of a player who will start the game"""
+        interval = self.get_player_count()
+        numbers = [i for i in range(interval)]
+        return choice(numbers)
     
     def pull_card(self, name: Player) -> None:
         """Pulls a card for the player from the pack"""
@@ -387,10 +393,12 @@ class Game:
             else:
                 self.playernow = 0
                 self.round += 1
+                self.export_game_info()
         else:
             if self.playernow - 1 < 0:
                 self.playernow = player_count - 1
                 self.round += 1
+                self.export_game_info()
             else:
                 self.playernow -= 1
 
@@ -405,29 +413,33 @@ class Game:
     def run(self, player_count) -> None:
         """Game process this is where the magic happens."""
         self.add_players(player_count)
-
+        self.playernow = self.get_starter_player()
+        self.export_game_info()
+        plot_game(LOG_FILE)
         while len(self.pack) > 0 and self.players_with_card() > 1:
-            self.export_game_info()
-            plot_game(LOG_FILE)
             current_player = self.players[self.playernow]
-            print(self)
-            if self.to_pull > 0:
-                for i in range(self.to_pull):
-                    self.pull_card(current_player)
-                self.to_pull = 0
+            if current_player not in self.winners:
+                if self.to_pull > 0:
+                    for i in range(self.to_pull):
+                        self.pull_card(current_player)
+                    self.to_pull = 0
+                    self.next_player()
+                    continue
+                if self.skip:
+                    self.skip = False
+                    self.next_player()
+                    continue
+                print(self)
+                self.turn(current_player)
                 self.next_player()
-                continue
-            if self.skip:
-                self.skip = False
+                if len(current_player.deck) == 0:
+                    self.winners.append(current_player)
+                    print(current_player, "ran out of cards, left the game.")
+            else:
                 self.next_player()
-                continue
-            self.turn(current_player)
-            self.next_player()
-            if len(current_player.deck) < 1:
-                self.players.remove(current_player)
-                self.winners.append(current_player)
-                print(current_player, "ran out of cards, left the game.")
-
+            plot_game(LOG_FILE)
+        self.export_game_info()
+        plot_game(LOG_FILE)
         print(f"\nGame over. Winner(s): {[f"{idx+1}: {player}" for idx, player in enumerate(self.winners)]}")
 
 
