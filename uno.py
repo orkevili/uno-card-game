@@ -447,7 +447,7 @@ class Game:
             self.add_players(player_count)
         self.playernow = self.get_starter_player()
         self.export_game_info()
-        plot_game(LOG_FILE)
+        plot_game()
         while len(self.pack) > 0 and self.players_with_card() > 1:
             current_player = self.players[self.playernow]
             if current_player not in self.winners:
@@ -469,9 +469,9 @@ class Game:
                     print(current_player, "ran out of cards, left the game.")
             else:
                 self.next_player()
-            plot_game(LOG_FILE)
+            plot_game()
         self.export_game_info()
-        plot_game(LOG_FILE)
+        plot_game()
         print(f"\nGame over. Winner(s): {[f"{idx+1}: {player}" for idx, player in enumerate(self.winners)]}")
 
 
