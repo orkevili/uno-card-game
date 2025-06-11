@@ -88,22 +88,22 @@ class Pack:
             List of cards that makes a pack.
         """
         data = load_card_data()
-        colors = data.get("colors")
-        number_cards = data.get("number_cards")
-        action_cards = data.get("action_cards")
-        wild_cards = data.get("wild_cards")
+        colors = data["colors"]
+        number_cards = data["number_cards"]
+        action_cards = data["action_cards"]
+        wild_cards = data["wild_cards"]
         for color in colors:
             for number, count in number_cards.items():        
                 self.cards.extend(Card(color, number) * count)
-            for action_card in action_cards.get('types'):
-                self.cards.extend(Card(color, action_card) * action_cards.get('count'))
+            for action_card in action_cards['types']:
+                self.cards.extend(Card(color, action_card) * action_cards['count'])
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self) -> list:
+    def make_shuffled_pack(self) -> None:
         """Makes a new pack which is shuffled."""
         self.make_pack()
-        return shuffle(self.cards)
+        self.cards = shuffle(self.cards)
     
     def get_starter_card(self) -> Card:
         """Returns a starter card that is not action card on wild card."""
@@ -113,6 +113,7 @@ class Pack:
                 return self.cards.pop(i)
             except ValueError:
                 continue
+        return None
 
 
 class Player:
@@ -125,12 +126,6 @@ class Player:
     def __len__(self) -> int:
         """Returns how much cards the player has."""
         return len(self.deck)
-    
-    def __eq__(self, other_name: str) -> bool:
-        """True if names are same"""
-        if self.name == other_name:
-            return True
-        return False
     
     def __str__(self) -> str:
         return f"{self.name}"
@@ -229,7 +224,7 @@ class Game:
 
     def is_name_free(self, name: str) -> bool:
         for player in self.players:
-            if name == player:
+            if name == player.name:
                 return False
         return True
 
@@ -262,7 +257,7 @@ class Game:
             while not is_free:
                 name = input("name: ")
                 if self.is_name_free(name):
-                    self.add_player(Player(name))
+                    self.add_player(name)
                     is_free = True
                 else:
                     print(f"Name '{name}' is already in use, please select another one.")
@@ -351,8 +346,14 @@ class Game:
         print(f"-- {name.name} - dropped: {dropped_card} --")
 
     def bot_choose_card_to_drop(self, name: Player) -> int:
-        """Returns one card's index in the player's deck to drop."""
-        good_cards = {
+        """Bot card selection method
+        Args:
+            name:
+                Name of the bot player that has to drop a card.
+        Returns:
+            The index of selected card that will be dropped.
+        """
+        good_cards: dict = {
             "number": {},
             "action": {},
             "wild": {}

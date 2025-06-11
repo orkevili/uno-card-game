@@ -30,8 +30,11 @@ def plot_game():
     player4 = player_cards[3::player_count]
 
     fig, ax = plt.subplots(layout='constrained')
-    x = np.arange(0, len(rounds), 1)
-    y = np.arange(0, max(player_cards), 1)
+    step = 1
+    if len(rounds) > 25:
+        step += 1
+    x = np.arange(0, len(rounds), step)
+    y = np.arange(0, max(player_cards)+1, 1)
     plt.xticks(x)
     plt.yticks(y)
     ax.plot(player1)
