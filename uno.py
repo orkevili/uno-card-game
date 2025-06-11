@@ -32,11 +32,9 @@ class Card:
     
     def __eq__(self, other: "Card") -> bool:
         if not isinstance(other, Card):
-            return False
-        if self.color == other.color and self.type == other.type:
-            return True
-        return False
-    
+            return NotImplemented
+        return self.color == other.color and self.type == other.type
+            
     def __mul__(self, n):
         """Returns multiple pieces of a card"""
         return [Card(self.color, self.type) for _ in range(n)]
@@ -102,10 +100,10 @@ class Pack:
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self) -> None:
+    def make_shuffled_pack(self) -> "Pack":
         """Makes a new pack which is shuffled."""
         self.make_pack()
-        self.cards = shuffle(self.cards)
+        return shuffle(self.cards)
     
     def get_starter_card(self) -> Card:
         """Returns a starter card that is not action card on wild card."""
@@ -114,6 +112,7 @@ class Pack:
             try:
                 int(self.cards[i].type)
                 starter = self.cards.pop(i)
+                break
             except ValueError:
                 continue
         return starter

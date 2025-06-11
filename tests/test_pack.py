@@ -1,17 +1,22 @@
-from uno import Pack
+from uno import Pack, Card
 
-pack = Pack()
 
-def test_pack():
+def test_make_pack():
+    pack = Pack()
     pack.make_pack()
-    assert len(pack.cards) > 0
+    assert len(pack.cards) == 108
 
+def test_make_shuffled_pack():
+    pack = Pack()
     pack.make_shuffled_pack()
-    assert len(pack.cards) > 0
+    assert len(pack.cards) == 108
 
 def test_get_starter_card():
+    pack = Pack()
     pack.make_pack()
-    assert pack.get_starter_card()
+    starter = pack.get_starter_card()
+    assert isinstance(starter, Card)
 
     pack.make_shuffled_pack()
-    assert pack.get_starter_card()
+    shuffled_starter = pack.get_starter_card()
+    assert isinstance(shuffled_starter, Card)
