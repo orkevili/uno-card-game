@@ -31,9 +31,10 @@ class Card:
         return f"Card({self.color}, {self.type})"
     
     def __eq__(self, other: "Card") -> bool:
-        if isinstance(other, Card):
-            if self.color == other.color and self.type == other.type:
-                return True
+        if not isinstance(other, Card):
+            return False
+        if self.color == other.color and self.type == other.type:
+            return True
         return False
     
     def __mul__(self, n):
@@ -108,7 +109,7 @@ class Pack:
     
     def get_starter_card(self) -> Card:
         """Returns a starter card that is not action card on wild card."""
-        starter = Card()
+        starter = Card("", "")
         for i in range(len(self.cards)-1, 1, -1):
             try:
                 int(self.cards[i].type)
