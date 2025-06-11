@@ -4,8 +4,9 @@ Programming 1 project by: Örkényi Vilmos
 Summary: UNO card game.
 """
 import os
+from sys import argv
 from uno import *
-    
+
 def get_player_count():
     is_number = False
     while not is_number:
@@ -23,9 +24,16 @@ def clear_log(filename: str = LOG_FILE):
     if os.path.exists(LOG_FILE):
         os.remove(LOG_FILE)
 
+
 if __name__ == "__main__":
+    only_bots = False
+    if len(argv) > 1:
+        if argv[1] == "bot":
+            print("Starting the game with only bot players.")
+            only_bots = True
+    print("-- UNO Game --")
     clear_log()
     game = Game()
     count = get_player_count()
-    game.run(count)
+    game.run(count, only_bots)
     

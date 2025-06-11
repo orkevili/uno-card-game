@@ -2,12 +2,12 @@ import json, os
 from random import shuffle, choice
 from plot import plot_game
 
-LOG_FILE = "game_log.json"
-CARD_DATA = "deck.json"
+LOG_FILE = "data/game_log.json"
+CARD_DATA = "data/deck.json"
 START_CARDS = 7
-BOT_NAME = "bot_Bob"
+BOT_NAMES = ["bot_Fernandez", "bot_Javier", "bot_Vato", "bot_Loco"]
 
-def load_card_data(file: str = CARD_DATA):
+def load_card_data(file: str = CARD_DATA) -> dict:
     """Load cards from json file(CARD_DATA)"""
     with open(file, "r") as f:
         data = json.load(f)
@@ -30,7 +30,7 @@ class Card:
     def __repr__(self):
         return f"Card({self.color}, {self.type})"
     
-    def __eq__(self, other: "Card"):
+    def __eq__(self, other: "Card") -> bool:
         if self.color == other.color and self.type == other.type:
             return True
         return False
@@ -83,7 +83,7 @@ class Pack:
     def make_pack(self) -> None:
         """Makes a pack from cards
         Args:
-            cards
+            cards: that will be in the pack
         Returns:
             List of cards that makes a pack.
         """
@@ -100,7 +100,7 @@ class Pack:
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self) -> None:
+    def make_shuffled_pack(self) -> list:
         """Makes a new pack which is shuffled."""
         self.make_pack()
         return shuffle(self.cards)
@@ -119,12 +119,18 @@ class Player:
     def __init__(self, name: str, is_bot: bool = False):
         """Need a name that will be used for the player during the game, is_bot tells if the player is going to be a bot player or not."""
         self.name = name
-        self.deck = []
+        self.deck: list = []
         self.is_bot = is_bot
 
     def __len__(self) -> int:
         """Returns how much cards the player has."""
         return len(self.deck)
+    
+    def __eq__(self, other_name: str) -> bool:
+        """True if names are same"""
+        if self.name == other_name:
+            return True
+        return False
     
     def __str__(self) -> str:
         return f"{self.name}"
@@ -193,7 +199,7 @@ class Game:
         return(
             f"----------------------------------\n"
             f"Round: {self.round}, "
-            f"in turn: {self.players[self.playernow] if self.players else None}, "
+            f"in turn: {self.players[self.playernow]}, "
             f"remaining cards in pack: {len(self.pack)}\n"
             f"To pull: {self.to_pull}, Skip: {self.skip}, Clockwise: {self.clockwise}\n"
             f"last card: {self.last_card}\n"
@@ -221,6 +227,12 @@ class Game:
         with open(filename, "w") as f:
             json.dump(data, f, indent=4)
 
+    def is_name_free(self, name: str) -> bool:
+        for player in self.players:
+            if name == player:
+                return False
+        return True
+
     def add_player(self, name: str) -> None:
         """Adds player to the game, and gives 7 card to the player's deck"""
         self.players.append(Player(name))
@@ -228,7 +240,13 @@ class Game:
 
     def add_bot(self) -> None:
         """Adds a bot to the game"""
-        bot_player = Player(BOT_NAME, True)
+        name_is_free = False
+        while not name_is_free:
+            name = choice(BOT_NAMES)
+            names_in_use = [player.name for player in self.players]
+            if name not in names_in_use:
+                name_is_free = True
+        bot_player = Player(name, True)
         self.players.append(bot_player)
         self.give_starting_deck()
 
@@ -240,8 +258,14 @@ class Game:
         """
         for i in range(count):
             print(f"{i+1}; player")
-            name = input("name: ")
-            self.add_player(Player(name))
+            is_free = False
+            while not is_free:
+                name = input("name: ")
+                if self.is_name_free(name):
+                    self.add_player(Player(name))
+                    is_free = True
+                else:
+                    print(f"Name '{name}' is already in use, please select another one.")
         if len(self.players) < 2:
             self.add_bot()
     
@@ -410,9 +434,17 @@ class Game:
                 player_count += 1
         return player_count
 
-    def run(self, player_count) -> None:
-        """Game process this is where the magic happens."""
-        self.add_players(player_count)
+    def run(self, player_count, only_bots: bool = False) -> None:
+        """This is the game logic.
+        Args:
+            player_count: The number of the players that will be playing
+            only_bots: Default value is false, if set to true only bot players will be added to the game.
+        """
+        if only_bots:
+            for i in range(player_count):
+                self.add_bot()
+        else:
+            self.add_players(player_count)
         self.playernow = self.get_starter_player()
         self.export_game_info()
         plot_game(LOG_FILE)
