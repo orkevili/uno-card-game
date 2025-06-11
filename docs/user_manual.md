@@ -1,7 +1,7 @@
 # Program működésének, funkcióinak bemutatása, használati útmutató
 
 ## Kártyák
-    Összesen 108 kártya van egy pakliban, ezek 3 különböző kategóriába választhatók szét, nem egyforma arányban. A játékban a kártyák 4 féle színűek lehetnek: piros, zöld, kék, sárga.
+Összesen 108 kártya van egy pakliban, ezek 3 különböző kategóriába választhatók szét, nem egyforma arányban. A játékban a kártyák 4 féle színűek lehetnek: piros, zöld, kék, sárga.
 1. Szám: 
     - 0-9-ig terjed számozásuk, mindegyik számból 2 lap van színenként, kivéve a 0-ást, abból csak 1.
     - Ezeknek a kártyáknak nincs semmi különleges tulajdonsága.
@@ -23,7 +23,7 @@
         > Színválasztós kártya lerakásánál megnézi a saját kártyái között, hogy melyikből van a legtöbb és olyan színt kér.
 
 ## Indítás
-    A programot a 'main.py' fájl futtatásával lehet elindítani. (Parancssori argumentumként megadható pluszban a `bot` kulcsszó, amelyet, ha beírunk, csak bot játékosokkal futtatja a játékot. Ez a tesztelések során hasznos funkció)
+A programot a 'main.py' fájl futtatásával lehet elindítani. (Parancssori argumentumként megadható pluszban a `bot` kulcsszó, amelyet, ha beírunk, csak bot játékosokkal futtatja a játékot. Ez a tesztelések során hasznos funkció)
 Az indítást követően megkérdezi a program, hogy hány emberrel szeretnénk játszani (A játékosok száma 1-4 között lehet).
 >A program bekér a játékosok számának függvényében nevet/neveket. Ha csak egy játékost adunk a játékhoz, a program automatikusan beléptet egy bot játékost.
 
