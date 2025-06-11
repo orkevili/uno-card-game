@@ -305,7 +305,7 @@ class Game:
                 else:
                     self.clockwise = True
                 if self.get_player_count() == 2:
-                    self.next_player()
+                    self.skip = True
             case "wild":
                 if name.is_bot:
                     color = name.get_color_with_most_cards()

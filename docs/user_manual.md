@@ -23,7 +23,7 @@
         > Színválasztós kártya lerakásánál megnézi a saját kártyái között, hogy melyikből van a legtöbb és olyan színt kér.
 
 ## Indítás
-A programot a 'main.py' fájl futtatásával lehet elindítani. (Parancssori argumentumként megadható pluszban a `bot` kulcsszó, amelyet, ha beírunk, csak bot játékosokkal futtatja a játékot. Ez a tesztelések során hasznos funkció)
+A programot a 'main.py' fájl futtatásával lehet elindítani. (Parancssori argumentumként megadható pluszban a `bot` kulcsszó, amelyet, ha beírunk, csak bot játékosokkal futtatja a játékot. Ez a tesztelések során hasznos funkció).
 Az indítást követően megkérdezi a program, hogy hány emberrel szeretnénk játszani (A játékosok száma 1-4 között lehet).
 >A program bekér a játékosok számának függvényében nevet/neveket. Ha csak egy játékost adunk a játékhoz, a program automatikusan beléptet egy bot játékost.
 

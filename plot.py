@@ -43,5 +43,4 @@ def plot_game(filename: str = LOG_FILE):
     plt.close()
 
 if __name__ == "__main__":
-    load_log()
     plot_game()
