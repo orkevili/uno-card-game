@@ -8,7 +8,7 @@ START_CARDS = 7
 BOT_NAMES = ["bot_Fernandez", "bot_Javier", "bot_Vato", "bot_Loco"]
 
 def load_card_data(file: str = CARD_DATA) -> dict:
-    """Load cards from json file(CARD_DATA)"""
+    """Loads cards from json file(CARD_DATA)"""
     with open(file, "r") as f:
         data = json.load(f)
     return data
@@ -81,12 +81,7 @@ class Pack:
         return f"{self.cards}"
 
     def make_pack(self) -> None:
-        """Makes a pack from cards
-        Args:
-            cards: that will be in the pack
-        Returns:
-            List of cards that makes a pack.
-        """
+        """Makes a pack from cards"""
         data = load_card_data()
         colors = data["colors"]
         number_cards = data["number_cards"]
@@ -106,7 +101,10 @@ class Pack:
         shuffle(self.cards)
     
     def get_starter_card(self) -> Card:
-        """Returns a starter card that is not action card on wild card."""
+        """Returns:
+            Card:
+                a starter card that is not action card on wild card.
+        """
         starter = Card("", "")
         for i in range(len(self.cards)-1, 1, -1):
             try:
@@ -120,7 +118,11 @@ class Pack:
 
 class Player:
     def __init__(self, name: str, is_bot: bool = False):
-        """Need a name that will be used for the player during the game, is_bot tells if the player is going to be a bot player or not."""
+        """"
+        Args:
+            name: this will be user for the player during the game
+            is_bot: tells if the player is going to be a bot-player or not
+        """
         self.name = name
         self.deck: list = []
         self.is_bot = is_bot
@@ -135,6 +137,7 @@ class Player:
     def __repr__(self) -> str:
         return f"Player({self.name})"
     
+    
     def add_card(self, card: Card) -> None:
         """Adds a card to the players deck."""
         self.deck.append(card)
@@ -146,7 +149,7 @@ class Player:
                 self.deck.pop(i)
     
     def has_card_to_place_on(self, other: Card) -> bool:
-        """Tells if the player has any card to place on another card"""
+        """Tells if the player has any card to place on 'other' card"""
         for card in self.deck:
             if card.can_place_on(other):
                 return True
@@ -168,14 +171,17 @@ class Player:
         """Returns the most often occurring color in the players deck"""
         return self.get_colors_in_deck()[0][0]
 
+    def print_deck(self):
+        for idx, card in enumerate(self.deck):
+                print(f"{idx+1}. {card}")
     
 
 class Game:
     def __init__(self):
         """initializes the game
         Args:
-            pack: makes a pack, then shuffles it
-            round: shows the rounds in the game, it starts with 1
+            pack: makes shuffled pack
+            round: shows the rounds in the game, it starts with 0 because of the logging
             playernow: returns the index of the player that is in turn
             clockwise: game starts in clockwise, but it can change
             players: list of players who are playing
@@ -225,24 +231,35 @@ class Game:
             json.dump(data, f, indent=4)
 
     def is_name_free(self, name: str) -> bool:
-        for player in self.players:
-            if name == player.name:
-                return False
+        """Checks if the player name is in use or not.
+        Args:
+            name: A name that will be used
+        Returns:
+        True: 
+         if the choosen name is not added to the game yet.
+        False: 
+         if the choosen name is already used in the game.
+        """
+        taken_names = [player.name for player in self.players]
+        if name in taken_names:
+            return False
         return True
 
     def add_player(self, name: str) -> None:
         """Adds player to the game, and gives 7 card to the player's deck"""
-        self.players.append(Player(name))
-        self.give_starting_deck()
+        if self.is_name_free(name):
+            self.players.append(Player(name))
+            self.give_starting_deck()
+        else:
+            raise ValueError("Name is already in use.")
 
-    def add_bot(self) -> None:
-        """Adds a bot to the game"""
-        name_is_free = False
-        while not name_is_free:
+    def add_bot(self, name: str = choice(BOT_NAMES)) -> None:
+        """Adds a bot to the game
+        Args:
+            name: gets a random name from the given bot names list
+        """
+        while not self.is_name_free(name):
             name = choice(BOT_NAMES)
-            names_in_use = [player.name for player in self.players]
-            if name not in names_in_use:
-                name_is_free = True
         bot_player = Player(name, True)
         self.players.append(bot_player)
         self.give_starting_deck()
@@ -380,37 +397,39 @@ class Game:
         else:
              return next(iter(good_cards['wild']))
 
-
-    def turn(self, name: Player) -> None:
+    def get_action(self, player: Player) -> None:
         """Gives a player a choice to pull or drop a card"""
-        decor = 3*len(name)*'-'
-        print(f"In turn:\n{decor}\n{' '*len(name)}{name}\n{decor}")
-        if not name.is_bot:        
-            for idx, card in enumerate(name.deck):
-                print(f"{idx+1}. {card}")
-            valid_command = False
-            while not valid_command:
-                action = input("pull or drop? ")
-                if action in ["pull", "drop"]:
-                    valid_command = True
-                else:
-                    print("Invalid command.")
-            if action == "pull":
-                self.pull_card(name)
+        valid_command = False
+        while not valid_command:
+            command = input("pull or drop? ")
+            if command in ["pull", "drop"]:
+                valid_command = True
             else:
-                if name.has_card_to_place_on(self.last_card):
-                    self.drop_card(name)    
-                else:
-                    print(f"Can't place any card on {self.last_card}, pull a card.\n")
-                    self.pull_card(name)
+                print("Invalid command.")
+        if command == "pull":
+            self.pull_card(player)
         else:
-            if name.has_card_to_place_on(self.last_card):
-                idx = self.bot_choose_card_to_drop(name)
-                self.drop_card_by_idx(name, idx)
+            if player.has_card_to_place_on(self.last_card):
+                self.drop_card(player)    
             else:
-                print(f"{name} can't place any card on {self.last_card}, pull one.")
-                self.pull_card(name)
+                print(f"Can't place any card on {self.last_card}, pull a card.\n")
+                self.pull_card(player)
 
+    def turn(self, player: Player) -> None:
+        """Makes the print and choice to pull or drop if player is not bot."""
+        decor = 3*len(player)*'-'
+        print(f"In turn:\n{decor}\n{' '*len(player)}{player}\n{decor}")
+        if player.is_bot:        
+            if player.has_card_to_place_on(self.last_card):
+                idx = self.bot_choose_card_to_drop(player)
+                self.drop_card_by_idx(player, idx)
+            else:
+                print(f"{player} can't place any card on {self.last_card}, pull one.")
+                self.pull_card(player)
+        else:
+            player.print_deck()
+            self.get_action(player)
+            
     def next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
         player_count = len(self.players)
@@ -421,16 +440,18 @@ class Game:
                 self.playernow = 0
                 self.round += 1
                 self.export_game_info()
+                plot_game()
         else:
             if self.playernow - 1 < 0:
                 self.playernow = player_count - 1
                 self.round += 1
                 self.export_game_info()
+                plot_game()
             else:
                 self.playernow -= 1
 
     def players_with_card(self) -> int:
-        """Returns a number of players with card"""
+        """Returns the number of the players with card"""
         player_count = 0
         for player in self.players:
             if len(player.deck) > 0:
@@ -472,7 +493,6 @@ class Game:
                     print(current_player, "ran out of cards, left the game.")
             else:
                 self.next_player()
-            plot_game()
         self.export_game_info()
         plot_game()
         print(f"\nGame over. Winner(s): {[f"{idx+1}: {player}" for idx, player in enumerate(self.winners)]}")

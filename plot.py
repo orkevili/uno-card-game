@@ -31,7 +31,9 @@ def plot_game():
 
     fig, ax = plt.subplots(layout='constrained')
     step = 1
-    if len(rounds) > 25:
+    if len(rounds) > 26:
+        step += 1
+    if len(rounds) > 50:
         step += 1
     x = np.arange(0, len(rounds), step)
     y = np.arange(0, max(player_cards)+1, 1)
