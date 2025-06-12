@@ -1,74 +1,266 @@
 {
     "0": {
-        "Test": 7,
+        "bot_Fernandez": 7,
+        "bot_Vato": 7,
+        "bot_Loco": 7,
         "bot_Javier": 7
     },
     "1": {
-        "Test": 6,
-        "bot_Javier": 7
-    },
-    "2": {
-        "Test": 5,
-        "bot_Javier": 7
-    },
-    "3": {
-        "Test": 4,
-        "bot_Javier": 7
-    },
-    "4": {
-        "Test": 5,
+        "bot_Fernandez": 7,
+        "bot_Vato": 6,
+        "bot_Loco": 6,
         "bot_Javier": 6
     },
+    "2": {
+        "bot_Fernandez": 6,
+        "bot_Vato": 5,
+        "bot_Loco": 5,
+        "bot_Javier": 10
+    },
+    "3": {
+        "bot_Fernandez": 5,
+        "bot_Vato": 4,
+        "bot_Loco": 4,
+        "bot_Javier": 9
+    },
+    "4": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 3,
+        "bot_Loco": 3,
+        "bot_Javier": 8
+    },
     "5": {
-        "Test": 6,
-        "bot_Javier": 5
+        "bot_Fernandez": 3,
+        "bot_Vato": 2,
+        "bot_Loco": 3,
+        "bot_Javier": 7
     },
     "6": {
-        "Test": 5,
-        "bot_Javier": 4
+        "bot_Fernandez": 2,
+        "bot_Vato": 4,
+        "bot_Loco": 4,
+        "bot_Javier": 6
     },
     "7": {
-        "Test": 9,
-        "bot_Javier": 3
+        "bot_Fernandez": 1,
+        "bot_Vato": 3,
+        "bot_Loco": 5,
+        "bot_Javier": 5
     },
     "8": {
-        "Test": 8,
-        "bot_Javier": 2
+        "bot_Fernandez": 2,
+        "bot_Vato": 2,
+        "bot_Loco": 4,
+        "bot_Javier": 4
     },
     "9": {
-        "Test": 7,
-        "bot_Javier": 3
+        "bot_Fernandez": 1,
+        "bot_Vato": 3,
+        "bot_Loco": 3,
+        "bot_Javier": 4
     },
     "10": {
-        "Test": 6,
+        "bot_Fernandez": 2,
+        "bot_Vato": 4,
+        "bot_Loco": 2,
         "bot_Javier": 4
     },
     "11": {
-        "Test": 5,
+        "bot_Fernandez": 1,
+        "bot_Vato": 3,
+        "bot_Loco": 3,
         "bot_Javier": 3
     },
     "12": {
-        "Test": 6,
-        "bot_Javier": 4
+        "bot_Fernandez": 5,
+        "bot_Vato": 4,
+        "bot_Loco": 2,
+        "bot_Javier": 3
     },
     "13": {
-        "Test": 7,
-        "bot_Javier": 5
+        "bot_Fernandez": 4,
+        "bot_Vato": 6,
+        "bot_Loco": 3,
+        "bot_Javier": 2
     },
     "14": {
-        "Test": 6,
-        "bot_Javier": 6
+        "bot_Fernandez": 3,
+        "bot_Vato": 5,
+        "bot_Loco": 4,
+        "bot_Javier": 3
     },
     "15": {
-        "Test": 5,
-        "bot_Javier": 5
-    },
-    "16": {
-        "Test": 4,
+        "bot_Fernandez": 2,
+        "bot_Vato": 4,
+        "bot_Loco": 5,
         "bot_Javier": 4
     },
+    "16": {
+        "bot_Fernandez": 1,
+        "bot_Vato": 3,
+        "bot_Loco": 4,
+        "bot_Javier": 5
+    },
     "17": {
-        "Test": 3,
+        "bot_Fernandez": 2,
+        "bot_Vato": 2,
+        "bot_Loco": 5,
+        "bot_Javier": 4
+    },
+    "18": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 1,
+        "bot_Loco": 5,
+        "bot_Javier": 4
+    },
+    "19": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 1,
+        "bot_Loco": 4,
+        "bot_Javier": 4
+    },
+    "20": {
+        "bot_Fernandez": 5,
+        "bot_Vato": 0,
+        "bot_Loco": 8,
+        "bot_Javier": 5
+    },
+    "21": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 0,
+        "bot_Loco": 7,
+        "bot_Javier": 4
+    },
+    "22": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 6,
+        "bot_Javier": 3
+    },
+    "23": {
+        "bot_Fernandez": 2,
+        "bot_Vato": 0,
+        "bot_Loco": 5,
+        "bot_Javier": 5
+    },
+    "24": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 4,
+        "bot_Javier": 7
+    },
+    "25": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
         "bot_Javier": 6
+    },
+    "26": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 2,
+        "bot_Javier": 5
+    },
+    "27": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 4
+    },
+    "28": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 2,
+        "bot_Javier": 3
+    },
+    "29": {
+        "bot_Fernandez": 2,
+        "bot_Vato": 0,
+        "bot_Loco": 1,
+        "bot_Javier": 2
+    },
+    "30": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 2,
+        "bot_Javier": 3
+    },
+    "31": {
+        "bot_Fernandez": 4,
+        "bot_Vato": 0,
+        "bot_Loco": 1,
+        "bot_Javier": 5
+    },
+    "32": {
+        "bot_Fernandez": 3,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 4
+    },
+    "33": {
+        "bot_Fernandez": 2,
+        "bot_Vato": 0,
+        "bot_Loco": 2,
+        "bot_Javier": 5
+    },
+    "34": {
+        "bot_Fernandez": 1,
+        "bot_Vato": 0,
+        "bot_Loco": 6,
+        "bot_Javier": 4
+    },
+    "35": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 7,
+        "bot_Javier": 3
+    },
+    "36": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 6,
+        "bot_Javier": 2
+    },
+    "37": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 5,
+        "bot_Javier": 3
+    },
+    "38": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 4,
+        "bot_Javier": 3
+    },
+    "39": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 3
+    },
+    "40": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 2
+    },
+    "41": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 4,
+        "bot_Javier": 1
+    },
+    "42": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 0
+    },
+    "42": {
+        "bot_Fernandez": 0,
+        "bot_Vato": 0,
+        "bot_Loco": 3,
+        "bot_Javier": 0
     }
 }

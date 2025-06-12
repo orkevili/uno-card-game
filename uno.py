@@ -18,6 +18,19 @@ def get_colors() -> list:
     data = load_card_data()
     return data['colors']
 
+def get_player_count():
+    is_number = False
+    while not is_number:
+        player_count = input("How many players are gonna play? ")
+        try:
+            player_count = int(player_count)
+            if player_count > 0 and player_count < 5:
+                is_number = True
+            else: print("Number has to be greater than 0 and maximum 4")
+        except:
+            print("You need to enter a valid number to continue.")
+    return player_count
+
 
 class Card:
     def __init__(self, color: str, type: str|int):
@@ -415,10 +428,22 @@ class Game:
                 print(f"Can't place any card on {self.last_card}, pull a card.\n")
                 self.pull_card(player)
 
-    def turn(self, player: Player) -> None:
-        """Makes the print and choice to pull or drop if player is not bot."""
+    def get_turn_info(self, player: Player) -> str:
+        """
+            Args:
+                player: the player that is in turn
+            Returns:
+                str: a string with a little decoration to give some feedback of the gameplay.
+            """
         decor = 3*len(player)*'-'
-        print(f"In turn:\n{decor}\n{' '*len(player)}{player}\n{decor}")
+        return f"In turn:\n{decor}\n{' '*len(player)}{player}\n{decor}"
+
+    def turn(self, player: Player) -> None:
+        """Prints the turn info, checks if the player is bot or not, pulls or drops a card.
+        Args:
+            player: if player is bot check if it can place any card, if can't pull a card. If tha player is not a bot, the prints the deck, and get action
+        """
+        print(self.get_turn_info(player))
         if player.is_bot:        
             if player.has_card_to_place_on(self.last_card):
                 idx = self.bot_choose_card_to_drop(player)
@@ -471,8 +496,9 @@ class Game:
             self.add_players(player_count)
         self.playernow = self.get_starter_player()
         self.export_game_info()
-        plot_game()
-        while len(self.pack) > 0 and self.players_with_card() > 1:
+        while self.players_with_card() > 1:
+            if not self.pack:
+                self.pack.make_shuffled_pack()
             current_player = self.players[self.playernow]
             if current_player not in self.winners:
                 if self.to_pull > 0:
@@ -499,6 +525,6 @@ class Game:
 
 
 if __name__ == "__main__":
-    count = int(input("player count: "))
+    count = get_player_count()
     game = Game()
     game.run(count)
