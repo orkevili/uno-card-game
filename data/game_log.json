@@ -1,266 +1,134 @@
 {
     "0": {
-        "bot_Fernandez": 7,
-        "bot_Vato": 7,
-        "bot_Loco": 7,
-        "bot_Javier": 7
+        "bot_Javier": 7,
+        "Test": 7
     },
     "1": {
-        "bot_Fernandez": 7,
-        "bot_Vato": 6,
-        "bot_Loco": 6,
-        "bot_Javier": 6
+        "bot_Javier": 6,
+        "Test": 6
     },
     "2": {
-        "bot_Fernandez": 6,
-        "bot_Vato": 5,
-        "bot_Loco": 5,
-        "bot_Javier": 10
+        "bot_Javier": 5,
+        "Test": 10
     },
     "3": {
-        "bot_Fernandez": 5,
-        "bot_Vato": 4,
-        "bot_Loco": 4,
-        "bot_Javier": 9
+        "bot_Javier": 4,
+        "Test": 9
     },
     "4": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 3,
-        "bot_Loco": 3,
-        "bot_Javier": 8
+        "bot_Javier": 3,
+        "Test": 8
     },
     "5": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 2,
-        "bot_Loco": 3,
-        "bot_Javier": 7
+        "bot_Javier": 2,
+        "Test": 7
     },
     "6": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 4,
-        "bot_Loco": 4,
-        "bot_Javier": 6
+        "bot_Javier": 1,
+        "Test": 6
     },
     "7": {
-        "bot_Fernandez": 1,
-        "bot_Vato": 3,
-        "bot_Loco": 5,
-        "bot_Javier": 5
+        "bot_Javier": 2,
+        "Test": 5
     },
     "8": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 2,
-        "bot_Loco": 4,
-        "bot_Javier": 4
+        "bot_Javier": 3,
+        "Test": 4
     },
     "9": {
-        "bot_Fernandez": 1,
-        "bot_Vato": 3,
-        "bot_Loco": 3,
-        "bot_Javier": 4
+        "bot_Javier": 2,
+        "Test": 3
     },
     "10": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 4,
-        "bot_Loco": 2,
-        "bot_Javier": 4
+        "bot_Javier": 3,
+        "Test": 4
     },
     "11": {
-        "bot_Fernandez": 1,
-        "bot_Vato": 3,
-        "bot_Loco": 3,
-        "bot_Javier": 3
+        "bot_Javier": 4,
+        "Test": 5
     },
     "12": {
-        "bot_Fernandez": 5,
-        "bot_Vato": 4,
-        "bot_Loco": 2,
-        "bot_Javier": 3
+        "bot_Javier": 5,
+        "Test": 6
     },
     "13": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 6,
-        "bot_Loco": 3,
-        "bot_Javier": 2
+        "bot_Javier": 6,
+        "Test": 7
     },
     "14": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 5,
-        "bot_Loco": 4,
-        "bot_Javier": 3
+        "bot_Javier": 7,
+        "Test": 8
     },
     "15": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 4,
-        "bot_Loco": 5,
-        "bot_Javier": 4
+        "bot_Javier": 6,
+        "Test": 12
     },
     "16": {
-        "bot_Fernandez": 1,
-        "bot_Vato": 3,
-        "bot_Loco": 4,
-        "bot_Javier": 5
+        "bot_Javier": 5,
+        "Test": 11
     },
     "17": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 2,
-        "bot_Loco": 5,
-        "bot_Javier": 4
+        "bot_Javier": 7,
+        "Test": 10
     },
     "18": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 1,
-        "bot_Loco": 5,
-        "bot_Javier": 4
+        "bot_Javier": 9,
+        "Test": 9
     },
     "19": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 1,
-        "bot_Loco": 4,
-        "bot_Javier": 4
+        "bot_Javier": 11,
+        "Test": 8
     },
     "20": {
-        "bot_Fernandez": 5,
-        "bot_Vato": 0,
-        "bot_Loco": 8,
-        "bot_Javier": 5
+        "bot_Javier": 13,
+        "Test": 7
     },
     "21": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 0,
-        "bot_Loco": 7,
-        "bot_Javier": 4
+        "bot_Javier": 17,
+        "Test": 6
     },
     "22": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 6,
-        "bot_Javier": 3
+        "bot_Javier": 16,
+        "Test": 5
     },
     "23": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 0,
-        "bot_Loco": 5,
-        "bot_Javier": 5
+        "bot_Javier": 15,
+        "Test": 4
     },
     "24": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 4,
-        "bot_Javier": 7
+        "bot_Javier": 14,
+        "Test": 3
     },
     "25": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 6
+        "bot_Javier": 13,
+        "Test": 2
     },
     "26": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 2,
-        "bot_Javier": 5
+        "bot_Javier": 13,
+        "Test": 1
     },
     "27": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 4
+        "bot_Javier": 12,
+        "Test": 2
     },
     "28": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 2,
-        "bot_Javier": 3
+        "bot_Javier": 11,
+        "Test": 3
     },
     "29": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 0,
-        "bot_Loco": 1,
-        "bot_Javier": 2
+        "bot_Javier": 11,
+        "Test": 2
     },
     "30": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 2,
-        "bot_Javier": 3
+        "bot_Javier": 11,
+        "Test": 1
     },
     "31": {
-        "bot_Fernandez": 4,
-        "bot_Vato": 0,
-        "bot_Loco": 1,
-        "bot_Javier": 5
+        "bot_Javier": 10,
+        "Test": 0
     },
-    "32": {
-        "bot_Fernandez": 3,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 4
-    },
-    "33": {
-        "bot_Fernandez": 2,
-        "bot_Vato": 0,
-        "bot_Loco": 2,
-        "bot_Javier": 5
-    },
-    "34": {
-        "bot_Fernandez": 1,
-        "bot_Vato": 0,
-        "bot_Loco": 6,
-        "bot_Javier": 4
-    },
-    "35": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 7,
-        "bot_Javier": 3
-    },
-    "36": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 6,
-        "bot_Javier": 2
-    },
-    "37": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 5,
-        "bot_Javier": 3
-    },
-    "38": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 4,
-        "bot_Javier": 3
-    },
-    "39": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 3
-    },
-    "40": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 2
-    },
-    "41": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 4,
-        "bot_Javier": 1
-    },
-    "42": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 0
-    },
-    "42": {
-        "bot_Fernandez": 0,
-        "bot_Vato": 0,
-        "bot_Loco": 3,
-        "bot_Javier": 0
+    "31": {
+        "bot_Javier": 10,
+        "Test": 0
     }
 }

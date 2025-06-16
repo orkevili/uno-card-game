@@ -18,7 +18,7 @@ def get_colors() -> list:
     data = load_card_data()
     return data['colors']
 
-def get_player_count():
+def get_player_number() -> int:
     is_number = False
     while not is_number:
         player_count = input("How many players are gonna play? ")
@@ -214,7 +214,7 @@ class Game:
     def __str__(self):
         return(
             f"----------------------------------\n"
-            f"Round: {self.round}, "
+            f"Round: {self.round+1}, "
             f"in turn: {self.players[self.playernow]}, "
             f"remaining cards in pack: {len(self.pack)}\n"
             f"To pull: {self.to_pull}, Skip: {self.skip}, Clockwise: {self.clockwise}\n"
@@ -302,11 +302,28 @@ class Game:
             self.players[-1].add_card(card)
 
     def get_starter_player(self) -> int:
-        """Return the index of a player who will start the game"""
+        """Return a random index of a player who will start the game"""
         interval = self.get_player_count()
         numbers = [i for i in range(interval)]
         return choice(numbers)
     
+    def rotate_player_list(self, shift_by: int) -> list:
+        """Shift the player list to get the starter player in the first place. Needed for the round counter to work properly.
+        Args:
+            shift_by: The number of the shifts in the players list.
+            player_list: A copy of the players list
+        Returns: rotated list of the players in game.
+        """
+        player_list = self.players[:]
+        if shift_by-1 > len(player_list):
+            shift_by = len(player_list)
+        for _ in range(shift_by):
+            for i in range(len(player_list)-1):
+                seged = player_list[i]
+                player_list[i] = player_list[i+1]
+                player_list[i+1] = seged
+        return player_list
+
     def pull_card(self, name: Player) -> None:
         """Pulls a card for the player from the pack"""
         card = self.pack.cards.pop(0)
@@ -457,7 +474,7 @@ class Game:
             
     def next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
-        player_count = len(self.players)
+        player_count = self.get_player_count()
         if self.clockwise:
             if self.playernow + 1 <= player_count - 1:
                 self.playernow += 1
@@ -494,7 +511,8 @@ class Game:
                 self.add_bot()
         else:
             self.add_players(player_count)
-        self.playernow = self.get_starter_player()
+        starter_player_idx = self.get_starter_player()
+        self.players = self.rotate_player_list(starter_player_idx)
         self.export_game_info()
         while self.players_with_card() > 1:
             if not self.pack:
@@ -525,6 +543,6 @@ class Game:
 
 
 if __name__ == "__main__":
-    count = get_player_count()
+    count = get_player_number()
     game = Game()
     game.run(count)

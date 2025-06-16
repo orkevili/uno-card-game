@@ -20,7 +20,9 @@ def start_game():
             only_bots = True
     clear_log()
     print("-- UNO Game --", msg)
-    count = get_player_count()
+    count = get_player_number()
+    if only_bots and count < 2:
+        raise ValueError("Need at least 2 players to start a game.")
     game = Game()
     game.run(count, only_bots)
 
