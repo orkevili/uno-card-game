@@ -21,9 +21,8 @@ def get_colors() -> list:
 def get_player_number() -> int:
     is_number = False
     while not is_number:
-        player_count = input("How many players are gonna play? ")
         try:
-            player_count = int(player_count)
+            player_count = int(input("How many players are gonna play? "))
             if player_count > 0 and player_count < 5:
                 is_number = True
             else: print("Number has to be greater than 0 and maximum 4")
