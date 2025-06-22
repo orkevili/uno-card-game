@@ -3,13 +3,8 @@ Programming 1 project by: Örkényi Vilmos
 
 Summary: UNO card game.
 """
-import os
 from sys import argv
 from uno import *
-
-def clear_log(filename: str = LOG_FILE):
-    if os.path.exists(LOG_FILE):
-        os.remove(LOG_FILE)
 
 def start_game():
     only_bots = False

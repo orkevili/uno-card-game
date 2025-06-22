@@ -7,6 +7,10 @@ CARD_DATA = "data/deck.json"
 START_CARDS = 7
 BOT_NAMES = ["bot_Fernandez", "bot_Javier", "bot_Vato", "bot_Loco"]
 
+def clear_log(filename: str = LOG_FILE):
+    if os.path.exists(LOG_FILE):
+        os.remove(LOG_FILE)
+
 def load_card_data(file: str = CARD_DATA) -> dict:
     """Loads cards from json file(CARD_DATA)"""
     with open(file, "r") as f:
@@ -343,6 +347,7 @@ class Game:
             case "skip":
                 self.skip = True
             case "reverse":
+                #TODO egy sorban egyszerűsítés
                 if self.clockwise:
                     self.clockwise = False
                 else:
@@ -362,23 +367,6 @@ class Game:
                 else:
                     card.ask_color()
                 self.to_pull = 4
-    
-    def drop_card(self, name: Player) -> None:
-        """Drops the choosen card from the player"""
-        good_card = False
-        while not good_card:
-            try:
-                card_idx = int(input("Which you want to drop? ")) - 1
-                card = name.deck[card_idx]
-                if card.can_place_on(self.last_card):
-                    self.match_type(card, name)
-                    good_card = True
-                    dropped_card = name.deck.pop(card_idx)
-                    self.last_card = dropped_card
-                    print(f"-- {name.name} - dropped: {dropped_card} --")
-                else: print(f"Can't place {card} on {self.last_card}")
-            except Exception as e:
-                print("Invalid card number.", e)
 
     def drop_card_by_idx(self, name: Player, card_idx) -> None:
         """Drops a card by index in the player's deck
@@ -427,22 +415,25 @@ class Game:
              return next(iter(good_cards['wild']))
 
     def get_action(self, player: Player) -> None:
-        """Gives a player a choice to pull or drop a card"""
-        valid_command = False
-        while not valid_command:
-            command = input("pull or drop? ")
-            if command in ["pull", "drop"]:
-                valid_command = True
-            else:
-                print("Invalid command.")
-        if command == "pull":
-            self.pull_card(player)
-        else:
-            if player.has_card_to_place_on(self.last_card):
-                self.drop_card(player)    
-            else:
-                print(f"Can't place any card on {self.last_card}, pull a card.\n")
-                self.pull_card(player)
+        """Drops or pulls a card for the player depends on user input"""
+        valid_number = False
+        while not valid_number:
+            try:
+                number = int(input("Number: "))
+                if number == 0:
+                    self.pull_card(player)
+                    valid_number = True
+                else:
+                    if player.has_card_to_place_on(self.last_card):
+                        if player.deck[number-1].can_place_on(self.last_card):
+                            self.drop_card_by_idx(player, number-1)
+                            valid_number = True
+                        else:
+                            print(f"Can't place {player.deck[number-1]} on {self.last_card}")
+                    else:
+                        print(f"{player.name} does't have any card to drop on {self.last_card}. Please pull a card(0).")
+            except Exception as e:
+                print(f"Please enter a valid number between 0-{len(player.deck)}")
 
     def get_turn_info(self, player: Player) -> str:
         """
