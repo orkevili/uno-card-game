@@ -322,16 +322,16 @@ class Game:
             shift_by = len(player_list)
         for _ in range(shift_by):
             for i in range(len(player_list)-1):
-                seged = player_list[i]
+                temp = player_list[i]
                 player_list[i] = player_list[i+1]
-                player_list[i+1] = seged
+                player_list[i+1] = temp
         return player_list
 
-    def pull_card(self, name: Player) -> None:
+    def pull_card(self, player: Player) -> None:
         """Pulls a card for the player from the pack"""
         card = self.pack.cards.pop(0)
-        name.add_card(card)
-        print(f"-- {name.name} -- pulled: {card} --")
+        player.add_card(card)
+        print(f"-- {player.name} -- pulled: {card} --")
 
     def match_type(self, card: Card, name: Player) -> None:
         """Checks the type of the card and makes the required changes in the variables of the class.
@@ -347,11 +347,7 @@ class Game:
             case "skip":
                 self.skip = True
             case "reverse":
-                #TODO egy sorban egyszerűsítés
-                if self.clockwise:
-                    self.clockwise = False
-                else:
-                    self.clockwise = True
+                self.clockwise = not self.clockwise
                 if self.get_player_count() == 2:
                     self.skip = True
             case "wild":

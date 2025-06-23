@@ -29,12 +29,12 @@ Az indítást követően megkérdezi a program, hogy hány emberrel szeretnénk 
 
 ## Játékmenet
 1. A játékosnevek megadása után a program hozzáadja a játékosokat a játékhoz, legenerál egy kevert paklit.
-2. Minden játékosnak kiosztja a kezdőkártyákat, randomizált módon kiválasztja a kezdőjátékost.
+2. Minden játékosnak kiosztja a kezdőkártyákat, randomizált módon kiválasztja a kezdőjátékost, majd ezután átrendezi a játékoslistát, hogy a kezdőjátékostól induljon(Ez a körök számolásánál fontos).
 3. Amikor egy játékos sorra kerül két választása van:
-    - felhúz egy lapot, parancssorban: `pull`,
-    - letesz egy lapot, parancssorban: `drop`
-        >A program kilistázza a játékos lapjait sorszámozva és egy sorszámot vár válaszul a *parancssorsba*. Ha úgy adunk egy `drop` parancsot, hogy nem tudnák lapot tenni, akkor a program automatikusan felhúz egy lapot a nevünkben.
+    - felhúz egy lapot, parancssorban: `0`,
+    - letesz egy lapot,
+        >A program kilistázza a játékos lapjait sorszámozva és egy sorszámot vár válaszul a *parancssorsba*. Ha olyan lapot rakna le a játékos, amely nem letehető, az adott utolsó kártyára, akkor `Can't place red(5) on blue(skip)`-hez hasonló szöveget láthatunk válaszul. Ezen kívül van még egy üzenet, amivel találkozhatunk kártya dobásnál: `[játékos neve] does't have any card to drop on [utolsó rakott kártya]. Please pull a card.(0)`
     
-    Miután egy játékos lépett (`drop`, `pull`), a program a le/nem rakott kártyától függően lép tovább a következő játékosra.
+    Miután egy játékos lépett, a program a le/nem rakott kártyától függően lép tovább a következő játékosra.
 4. A játék során minden körben készül diagram játékmenetről, amelyet `img/game_stats.png` fájl megtekintésével lehet nyomon követni. (A diagram tartalmazza a játékosokat, azok kártyáinak számát körökre lebontva, így vizuálisan is következő a játékosok állása).
-5. A játék addig tart, amíg el nem fogy a húzópakli, vagy csak 1 játékos marad kártyákkal.
+5. A játék addig tart, amíg csak 1 játékos marad kártyákkal. Amennyiben elfogy a húzópakli, a játék kever mégegyet.
