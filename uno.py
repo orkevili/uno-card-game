@@ -233,7 +233,7 @@ class Game:
         return len(self.players)
     
     def export_game_info(self, filename: str = LOG_FILE):
-        player_info = {self.round: {str(el.name): len(el) for el in self.players}}
+        player_info = {player.name: len(player) for player in self.players}
         if os.path.exists(filename):
             with open(filename, "r") as f:
                 try:
@@ -242,9 +242,12 @@ class Game:
                     data = {}
         else:
             data = {}
-        data.update(player_info)
+        for name, card_count in player_info.items():
+            if name not in data:
+                data[name] = []
+            data[name].append(card_count)
         with open(filename, "w") as f:
-            json.dump(data, f, indent=4)
+            json.dump(data, f, indent=2)
 
     def is_name_free(self, name: str) -> bool:
         """Checks if the player name is in use or not.
@@ -468,13 +471,13 @@ class Game:
                 self.playernow = 0
                 self.round += 1
                 self.export_game_info()
-                plot_game()
+                #plot_game()
         else:
             if self.playernow - 1 < 0:
                 self.playernow = player_count - 1
                 self.round += 1
                 self.export_game_info()
-                plot_game()
+                #plot_game()
             else:
                 self.playernow -= 1
 
@@ -524,7 +527,7 @@ class Game:
             else:
                 self.next_player()
         self.export_game_info()
-        plot_game()
+        #plot_game()
         print(f"\nGame over. Winner(s): {[f"{idx+1}: {player}" for idx, player in enumerate(self.winners)]}")
 
 

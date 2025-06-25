@@ -12,18 +12,15 @@ def load_log(filename: str = LOG_FILE):
 
 def get_players_stat(filename: str = LOG_FILE):
     data = load_log(filename)
-    rounds = [round for round in data]
-    players = []
-    player_cards = []
-    for el in data.values():
-        for name, cards in el.items():
-            players.append(name)
-            player_cards.append(cards)
+    players = [el for el in data]
+    player_cards = [data[el] for el in data]
+    rounds = len(player_cards[0])
+    
     return rounds, players, player_cards
 
 def plot_game():
     rounds, players, player_cards = get_players_stat() 
-    player_count = len(players)//len(rounds)
+    player_count = len(players)
     player1 = player_cards[::player_count]
     player2 = player_cards[1::player_count]
     player3 = player_cards[2::player_count]
@@ -31,11 +28,11 @@ def plot_game():
 
     fig, ax = plt.subplots(layout='constrained')
     step = 1
-    if len(rounds) > 26:
+    if rounds > 26:
         step += 1
-    if len(rounds) > 50:
+    if rounds > 50:
         step += 1
-    x = np.arange(0, len(rounds), step)
+    x = np.arange(0, rounds, step)
     y = np.arange(0, max(player_cards)+1, 1)
     plt.xticks(x)
     plt.yticks(y)
@@ -54,4 +51,5 @@ def plot_game():
     plt.close()
 
 if __name__ == "__main__":
+    print(get_players_stat())
     plot_game()
