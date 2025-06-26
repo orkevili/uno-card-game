@@ -6,7 +6,6 @@ LOG_FILE = "data/game_log.json"
 CARD_DATA = "data/deck.json"
 START_CARDS = 7
 BOT_NAMES = ["bot_Fernandez", "bot_Javier", "bot_Vato", "bot_Loco"]
-ACTION_CARDS = ["skip", "reverse", "draw_2"]
 WILD_CARDS = ["wild", "wild_draw_4"]
 
 def clear_log(filename: str = LOG_FILE):
@@ -19,7 +18,7 @@ def load_card_data(file: str = CARD_DATA) -> dict:
         data = json.load(f)
     return data
 
-def get_colors() -> list[str, str, str, str]:
+def get_colors() -> list[str]:
     """Loads the color variants from json file(CARD_DATA)"""
     data = load_card_data()
     return data['colors']
@@ -101,6 +100,10 @@ class Pack:
         """Makes a new pack which is shuffled."""
         self.make_pack()
         shuffle(self.cards)
+
+    def pull_card(self) -> Card:
+        "Returns the last card in the pack."
+        return self.cards.pop()
     
     def get_starter_card(self) -> Card:
         """Returns:
@@ -116,10 +119,7 @@ class Pack:
             except ValueError:
                 continue
         return starter
-
-    def pull_card(self) -> Card:
-        "Returns the last card in the pack."
-        return self.cards.pop(0)
+    
 
 class Player:
     def __init__(self, name: str, is_bot: bool = False):
@@ -186,24 +186,16 @@ class Game:
         self.pack = Pack()
         self.pack.make_shuffled_pack()
         self.round = 0
-        self.players = []
+        self.players: list[Player] = []
         self.playernow = 0
         self.clockwise = True
         self.to_pull = 0
         self.skip = False
         self.last_card = self.pack.get_starter_card()
-        self.winners = []
+        self.winners: list[Player] = []
 
     def __str__(self):
-        return(
-            f"----------------------------------\n"
-            f"Round: {self.round+1}, "
-            f"in turn: {self.players[self.playernow]}, "
-            f"remaining cards in pack: {len(self.pack)}\n"
-            f"To pull: {self.to_pull}, Skip: {self.skip}, Clockwise: {self.clockwise}\n"
-            f"last card: {self.last_card}\n"
-            f"----------------------------------"
-        )
+        return f"round: {self.round}, players: {self.players}, playernow: {self.playernow}, clockwise: {self.clockwise}, to pull: {self.to_pull}, to skip: {self.skip}, last card: {self.last_card}"
     
     def __repr__(self):
         return f"Game({self.pack}, Round: {self.round}\nClockwise: {self.clockwise}, \n{self.players}, \nPlayer now: {self.playernow}, \nLast card: {self.last_card}\n To pull: {self.to_pull}, Skip: {self.skip})"
@@ -240,8 +232,7 @@ class Game:
         False: 
          if the choosen name is already used in the game.
         """
-        taken_names = [player.name for player in self.players]
-        if name in taken_names:
+        if name in [player.name for player in self.players]:
             return False
         return True
 
@@ -278,7 +269,7 @@ class Game:
         numbers = [i for i in range(interval)]
         return choice(numbers)
     
-    def rotate_player_list(self, shift_by: int) -> list[str, str, str, str]:
+    def rotate_player_list(self, shift_by: int) -> list[Player]:
         """Shift the player list to get the starter player in the first place. Needed for the round counter to work properly.
         Args:
             shift_by: The number of the shifts in the players list.
@@ -452,8 +443,7 @@ class Game:
                     self.skip = False
                     self.next_player()
                     continue
-                #TODO ui-ba áthelyezni a játékmenet kiíratást
-                print(self)
+                self.ui.show_game_info()
                 self.turn(current_player)
                 self.next_player()
                 if len(current_player.deck) == 0:
@@ -516,7 +506,7 @@ class Ui:
                         else:
                             print(f"Can't place {player.deck[number-1]} on {self.game.last_card}")
                     else:
-                        print(f"{player.name} does't have any card to drop on {self.game.last_card}. Please pull a card(0).")
+                        print(f"{player.name} doesn't have any card to drop on {self.game.last_card}. Please pull a card(0).")
             except Exception as e:
                 print(f"Please enter a valid number between 0-{len(player.deck)}")
 
@@ -540,6 +530,17 @@ class Ui:
                     print(selected_idx)
                     print("Invalid number, try again.")
         return colors[selected_idx-1]
+    
+    def show_game_info(self):
+        print(
+            "-"*55, "\n"
+            f"Round: {self.game.round+1}, "
+            f"in turn: {self.game.players[self.game.playernow]}, "
+            f"remaining cards in pack: {len(self.game.pack)}\n"
+            f"To pull: {self.game.to_pull}, Skip: {self.game.skip}, Clockwise: {self.game.clockwise}\n"
+            f"last card: {self.game.last_card}\n",
+            "-"*55, "\n"
+        )
     
     def print_pull_card(self, player: Player):
         print(f"-- {player.name} -- pulled a card --")
