@@ -18,8 +18,7 @@ def start_game():
     count = get_player_number()
     if only_bots and count < 2:
         raise ValueError("Need at least 2 players to start a game.")
-    game = Game()
-    game.run(count, only_bots)
+    ui = Ui(count, only_bots)
 
     
 if __name__ == "__main__":
