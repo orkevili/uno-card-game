@@ -19,7 +19,7 @@ def load_card_data(file: str = CARD_DATA) -> dict:
         data = json.load(f)
     return data
 
-def get_colors() -> list:
+def get_colors() -> list[str, str, str, str]:
     """Loads the color variants from json file(CARD_DATA)"""
     data = load_card_data()
     return data['colors']
@@ -158,7 +158,7 @@ class Player:
                 return True
         return False
     
-    def get_most_occurring_color(self) -> list:
+    def get_most_occurring_color(self) -> str:
         """Returns the color which occurs the most often in the player's deck. Used for bot players."""
         colors = {}
         color_palette = get_colors()
@@ -278,7 +278,7 @@ class Game:
         numbers = [i for i in range(interval)]
         return choice(numbers)
     
-    def rotate_player_list(self, shift_by: int) -> list:
+    def rotate_player_list(self, shift_by: int) -> list[str, str, str, str]:
         """Shift the player list to get the starter player in the first place. Needed for the round counter to work properly.
         Args:
             shift_by: The number of the shifts in the players list.
@@ -494,13 +494,8 @@ class Ui:
         for idx, card in enumerate(player.deck):
                 print(f"{idx+1}. {card}")
 
-    def print_turn_info(self, player: Player) -> str:
-        """
-        Args:
-            player: the player that is in turn
-        Returns:
-            str: a string with a little decoration to give some feedback of the gameplay.
-        """
+    def print_turn_info(self, player: Player) -> None:
+        """Print the information according to the player"""
         decor = 3*len(player)*'-'
         print(f"In turn:\n{decor}\n{' '*len(player)}{player}\n{decor}")
 
