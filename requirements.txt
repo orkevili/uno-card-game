@@ -2,4 +2,3 @@ matplotlib
 mypy
 pdoc3
 pytest
-numpy

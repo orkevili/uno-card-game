@@ -1,8 +1,8 @@
-from uno import Game, Player
+from uno import Game, Player, Ui
 
-
+ui = Ui()
 def test_add_player():
-    game = Game()
+    game = Game(ui)
     game.add_player("test")
     assert len(game.players) == 1
     game.add_player("test2")
@@ -14,7 +14,7 @@ def test_pull_card():
     adding a player, player starts with 7 cards so 100 left in pack.
     pulling a card for the player so 99 cards left in the pack.
     """
-    game = Game()
+    game = Game(ui)
     assert len(game.pack) == 107
     game.add_player("test")
     assert len(game.pack) == 100
@@ -22,17 +22,17 @@ def test_pull_card():
     assert len(game.pack) == 99
 
 def test_next_player():
-    game = Game()
+    game = Game(ui)
     game.add_player("test")
     game.add_player("test2")
     assert game.playernow == 0
-    game.next_player()
+    game.__next_player()
     assert game.playernow == 1
-    game.next_player()
+    game.__next_player()
     assert game.playernow == 0
 
 def test_players_with_card():
-    game = Game()
+    game = Game(ui)
     assert game.players_with_card() == 0
     game.add_player("test")
     assert game.players_with_card() == 1

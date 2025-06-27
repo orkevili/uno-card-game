@@ -48,8 +48,7 @@ class Card:
         return f"Card({self.color}, {self.type})"
     
     def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Card):
-            return False
+        if not isinstance(other, Card): return False
         return self.color == other.color and self.type == other.type
             
     def __mul__(self, n):
@@ -58,6 +57,7 @@ class Card:
     
     def can_place_on(self, other: "Card") -> bool:
         """Tells if the card can be placed on another card"""
+        if not isinstance(other, Card): return False
         if self.color == other.color or self.type == other.type:
             return True
         if self.type in WILD_CARDS:
@@ -80,11 +80,18 @@ class Pack:
     
     def __str__(self):
         return f"{self.cards}"
+    
+    def __remove_card(self, card: Card):
+        """removes the given card from the pack"""
+        if card in self.cards:
+            try:
+                self.cards.remove(card)
+            except Exception as e: raise ValueError("Error during removing card from deck", e)
 
     def make_pack(self) -> None:
         """Makes a pack from cards"""
         data = load_card_data()
-        colors = data["colors"]
+        colors = get_colors()
         number_cards = data["number_cards"]
         action_cards = data["action_cards"]
         wild_cards = data["wild_cards"]
@@ -96,14 +103,19 @@ class Pack:
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self) -> None:
+    def make_shuffled_pack(self, without_cards: list[Card] = None) -> None:
         """Makes a new pack which is shuffled."""
         self.make_pack()
         shuffle(self.cards)
+        if without_cards:
+            for card in without_cards:
+                self.__remove_card(card)
 
     def pull_card(self) -> Card:
         "Returns the last card in the pack."
-        return self.cards.pop()
+        try:
+            return self.cards.pop()
+        except IndexError: raise ValueError("Out of cards.")
     
     def get_starter_card(self) -> Card:
         """Returns:
@@ -120,13 +132,21 @@ class Pack:
                 continue
         return starter
     
+    def get_starting_deck(self) -> list[Card]:
+        """Returns a list of cards for a player to start the game with."""
+        deck = []
+        for _ in range(START_CARDS):
+            deck.append(self.pull_card())
+        return deck
+
+    
 
 class Player:
     def __init__(self, name: str, is_bot: bool = False):
         """"
         Args:
             name: this will be user for the player during the game
-            is_bot: tells if the player is going to be a bot-player or not
+            is_bot: tells if the player is going to be a bot or not
         """
         self.name = name
         self.deck: list = []
@@ -147,9 +167,10 @@ class Player:
         """Adds a card to the players deck."""
         self.deck.append(card)
     
-    def remove_card(self, card: Card) -> None:
-        """Removes a card from the players deck."""
+    def remove_card(self, card: Card) -> Card:
+        """Removes a card from the players deck by index."""
         self.deck.remove(card)
+        return card
     
     def has_card_to_place_on(self, other: Card) -> bool:
         """Tells if the player has any card to place on 'other' card"""
@@ -158,6 +179,10 @@ class Player:
                 return True
         return False
     
+    def get_cards_in_hand(self) -> list[Card]:
+        """Returns the cards in the player's deck."""
+        return [card for card in self.deck]
+    
     def get_most_occurring_color(self) -> str:
         """Returns the color which occurs the most often in the player's deck. Used for bot players."""
         colors = {}
@@ -165,7 +190,7 @@ class Player:
         for color in color_palette:
             colors[color] = 0
         for card in self.deck:
-            if card.color not in ["wild", "wild_draw_4"]:
+            if card.color not in WILD_CARDS:
                 colors[card.color] += 1
         sorted_colors = sorted(colors.items(), key=lambda item: item[1], reverse=True)
         return sorted_colors[0][0]
@@ -204,6 +229,10 @@ class Game:
         """Returns how many players are in game"""
         return len(self.players)
     
+    def get_cards_in_players_hands(self):
+        """Returns a list of cards which are not in the pack"""
+        return [card for player in self.players for card in player.get_cards_in_hand()]
+    
     def export_game_info(self, filename: str = LOG_FILE):
         player_info = {player.name: len(player) for player in self.players}
         if os.path.exists(filename):
@@ -223,15 +252,7 @@ class Game:
         plot_game()
 
     def is_name_free(self, name: str) -> bool:
-        """Checks if the player name is in use or not.
-        Args:
-            name: A name that will be used
-        Returns:
-        True: 
-         if the choosen name is not added to the game yet.
-        False: 
-         if the choosen name is already used in the game.
-        """
+        """Checks if the player name is in use or not."""
         if name in [player.name for player in self.players]:
             return False
         return True
@@ -257,19 +278,19 @@ class Game:
         self.give_starting_deck(bot_player)
 
     
-    def give_starting_deck(self, player: Player, piece=START_CARDS):
+    def give_starting_deck(self, player: Player):
         """Gives the starting card for the given player"""
-        for _ in range(piece):
-            card = self.pack.pull_card()
+        deck = self.pack.get_starting_deck()
+        for card in deck:
             player.add_card(card)
 
-    def get_starter_player(self) -> int:
+    def __get_starter_player(self) -> int:
         """Return a random index of a player who will start the game"""
         interval = self.get_player_count()
         numbers = [i for i in range(interval)]
         return choice(numbers)
     
-    def rotate_player_list(self, shift_by: int) -> list[Player]:
+    def __rotate_player_list(self, shift_by: int) -> list[Player]:
         """Shift the player list to get the starter player in the first place. Needed for the round counter to work properly.
         Args:
             shift_by: The number of the shifts in the players list.
@@ -293,7 +314,7 @@ class Game:
         self.ui.print_pull_card(player)
         
 
-    def match_type(self, card: Card, player: Player) -> None:
+    def __match_type(self, card: Card, player: Player) -> None:
         """Checks the type of the card and makes the required changes in the variables of the class.
             Args:
                 card:
@@ -326,7 +347,7 @@ class Game:
                     card.set_color(color)
                 self.to_pull = 4
 
-    def drop_card_by_idx(self, player: Player, card_idx) -> None:
+    def drop_card_by_idx(self, player: Player, card_idx: int) -> None:
         """Drops a card by index in the player's deck
             Args:
                 player:
@@ -334,12 +355,13 @@ class Game:
                 card_idx:
                     The index of the choosen card in the players deck.
         """
-        self.match_type(player.deck[card_idx], player)
-        dropped_card = player.deck.pop(card_idx)
+        dropped_card = player.deck[card_idx]
+        self.__match_type(dropped_card, player)
+        player.remove_card(dropped_card)
         self.last_card = dropped_card
         self.ui.print_drop_card(player, dropped_card)
 
-    def bot_choose_card_to_drop(self, name: Player) -> int:
+    def __bot_choose_card_to_drop(self, name: Player) -> int:
         """Bot card selection method
         Args:
             name:
@@ -377,10 +399,10 @@ class Game:
         Args:
             player: if player is bot check if it can place any card, if can't pull a card. If tha player is not a bot, the prints the deck, and get action
         """
-        self.ui.print_turn_info(player)
+        self.ui.show_decor(player)
         if player.is_bot:        
             if player.has_card_to_place_on(self.last_card):
-                idx = self.bot_choose_card_to_drop(player)
+                idx = self.__bot_choose_card_to_drop(player)
                 self.drop_card_by_idx(player, idx)
             else:
                 self.pull_card(player)
@@ -388,7 +410,7 @@ class Game:
             self.ui.print_deck(player)
             self.ui.next_move(player)
             
-    def next_player(self) -> None:
+    def __next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
         player_count = self.get_player_count()
         if self.clockwise:
@@ -425,32 +447,33 @@ class Game:
                 self.add_bot()
         else:
             self.ui.add_players(player_count)
-        starter_player_idx = self.get_starter_player()
-        self.players = self.rotate_player_list(starter_player_idx)
+        starter_player_idx = self.__get_starter_player()
+        self.players = self.__rotate_player_list(starter_player_idx)
         self.export_game_info()
         while self.players_with_card() > 1:
             if not self.pack:
-                self.pack.make_shuffled_pack()
+                without_cards = self.get_cards_in_players_hands()
+                self.pack.make_shuffled_pack(without_cards)
             current_player = self.players[self.playernow]
             if current_player not in self.winners:
                 if self.to_pull > 0:
                     for i in range(self.to_pull):
                         self.pull_card(current_player)
                     self.to_pull = 0
-                    self.next_player()
+                    self.__next_player()
                     continue
                 if self.skip:
                     self.skip = False
-                    self.next_player()
+                    self.__next_player()
                     continue
                 self.ui.show_game_info()
                 self.turn(current_player)
-                self.next_player()
+                self.__next_player()
                 if len(current_player.deck) == 0:
                     self.winners.append(current_player)
                     self.ui.print_ran_out_of_cards(current_player)
             else:
-                self.next_player()
+                self.__next_player()
         self.export_game_info()
         self.ui.print_winners()
 
@@ -484,10 +507,10 @@ class Ui:
         for idx, card in enumerate(player.deck):
                 print(f"{idx+1}. {card}")
 
-    def print_turn_info(self, player: Player) -> None:
+    def show_decor(self, player: Player) -> None:
         """Print the information according to the player"""
         decor = 3*len(player)*'-'
-        print(f"In turn:\n{decor}\n{' '*len(player)}{player}\n{decor}")
+        print(f"{decor}\n{' '*len(player)}{player}\n{decor}")
 
     def next_move(self, player: Player) -> None:
         """Drops or pulls a card for the player depends on user input"""
@@ -535,9 +558,8 @@ class Ui:
         print(
             "-"*55, "\n"
             f"Round: {self.game.round+1}, "
-            f"in turn: {self.game.players[self.game.playernow]}, "
             f"remaining cards in pack: {len(self.game.pack)}\n"
-            f"To pull: {self.game.to_pull}, Skip: {self.game.skip}, Clockwise: {self.game.clockwise}\n"
+            f"Have to pull: {self.game.to_pull}, Skip: {self.game.skip}, Going in clockwise: {self.game.clockwise}\n"
             f"last card: {self.game.last_card}\n",
             "-"*55, "\n"
         )
