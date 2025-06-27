@@ -479,7 +479,7 @@ class Game:
 
         
 class Ui:
-    def __init__(self, human: int, bots: bool = False):
+    def __init__(self, human: int = 0, bots: bool = False):
         self.game = Game(self)
         self.game.run(human, bots)
 
