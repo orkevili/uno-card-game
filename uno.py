@@ -103,7 +103,7 @@ class Pack:
         for type, count in wild_cards.items():
             self.cards.extend(Card(type, type) * count)
 
-    def make_shuffled_pack(self, without_cards: list[Card] = None) -> None:
+    def make_shuffled_pack(self, without_cards: list[Card]|None = None) -> None:
         """Makes a new pack which is shuffled."""
         self.make_pack()
         shuffle(self.cards)

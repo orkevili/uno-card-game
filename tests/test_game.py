@@ -1,6 +1,6 @@
 from uno import Game, Player, Ui
 
-ui = Ui()
+ui = Ui(2)
 def test_add_player():
     game = Game(ui)
     game.add_player("test")
