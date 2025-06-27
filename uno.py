@@ -410,7 +410,7 @@ class Game:
             self.ui.print_deck(player)
             self.ui.next_move(player)
             
-    def __next_player(self) -> None:
+    def _next_player(self) -> None:
         """Changes current player to the next in line and manages round count"""
         player_count = self.get_player_count()
         if self.clockwise:
@@ -460,20 +460,20 @@ class Game:
                     for i in range(self.to_pull):
                         self.pull_card(current_player)
                     self.to_pull = 0
-                    self.__next_player()
+                    self._next_player()
                     continue
                 if self.skip:
                     self.skip = False
-                    self.__next_player()
+                    self._next_player()
                     continue
                 self.ui.show_game_info()
                 self.turn(current_player)
-                self.__next_player()
+                self._next_player()
                 if len(current_player.deck) == 0:
                     self.winners.append(current_player)
                     self.ui.print_ran_out_of_cards(current_player)
             else:
-                self.__next_player()
+                self._next_player()
         self.export_game_info()
         self.ui.print_winners()
 

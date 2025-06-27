@@ -26,9 +26,9 @@ def test_next_player():
     game.add_player("test")
     game.add_player("test2")
     assert game.playernow == 0
-    game.__next_player()
+    game._next_player()
     assert game.playernow == 1
-    game.__next_player()
+    game._next_player()
     assert game.playernow == 0
 
 def test_players_with_card():
