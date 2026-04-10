@@ -1,95 +1,40 @@
-# Beadandóval kapcsolatos elvárások, értékelési szempontok
+# Program működésének, funkcióinak bemutatása, használati útmutató
 
-## Git és GitHub használata
+## Kártyák
+Összesen 108 kártya van egy pakliban, ezek 3 különböző kategóriába választhatók szét, nem egyforma arányban. A játékban a kártyák 4 féle színűek lehetnek: piros, zöld, kék, sárga.
+1. Szám: 
+    - 0-9-ig terjed számozásuk, mindegyik számból 2 lap van színenként, kivéve a 0-ást, abból csak 1.
+    - Ezeknek a kártyáknak nincs semmi különleges tulajdonsága.
+2. Akció:
+    - 'skip' - Ha lerakják a következő játékos kimarad
+    - 'reverse' - Megfordítja a kört, ha csak két játékos van, akkor úgy működik, mint a 'skip' kártya
+    - 'draw_2' - A következő játékosnak fel kell húznia 2 lapot
+3. Színválasztó:
+    - Színválasztó - A lerakást követően, aki lerakta választhat egy tetszőlegest színt.
+    - Színválasztó húzz fel 4-et - Hasonlóan működik, mint az egyszerű színválasztós kártya, csak utána a következő játékosnak fel kell húznia 4 lapot.
 
-A munkát a default `main` branchen kell végezni.
-*(Kísérletezéshez le lehet belőle ágazni, de a véglegesnek szánt változat kerüljön merge-ölésre a `main`be.)*
+## Bot
+ - A programban van lehetőség `bot` ellen is játszani, amennyiben *egyetlen* játékossal indítjuk a játékot.
+ - Ilyenkor a program automatikusan hozzáad a játékmenethez egy `bot` játékost, amely teljesen önállóan működik.
 
-Amikor az adott fázis elkészült, mindhárom oktató (@hegyhati, @oliverosz, @szakitom) legyen felkérve reviewernek a Feedback pull request (#1) oldalán.
+        Bot játékos működése, funkciói
+    - Figyelembe veszi a lapokat, nem teljesen random módon rakja a kártyákat.
+    - Ha le tud tenni egyszerű 'szám' lapot, akkor azt teszi, ha csak 'akció' kártyát tud, akkor leteszi azt, ha ezek közül egyiket se, de rendelkezik 'színválasztó', vagy 'színválasztó húzz fel 4-et' lappal, akkor leteszi azt. Amennyiben nem tud semmilyen lapot se letenni, akkor felhúz egy lapot a pakliból.
+        > Színválasztós kártya lerakásánál megnézi a saját kártyái között, hogy melyikből van a legtöbb és olyan színt kér.
 
-Az adott reviewer által kért javítások elkészültét a neve melletti *Re-request review* gombbal kell jelezni.
+## Indítás
+A programot a 'main.py' fájl futtatásával lehet elindítani. (Parancssori argumentumként megadható pluszban a `bot` kulcsszó, amelyet, ha beírunk, csak bot játékosokkal futtatja a játékot. Ez a tesztelések során hasznos funkció).
+Az indítást követően megkérdezi a program, hogy hány emberrel szeretnénk játszani (A játékosok száma 1-4 között lehet).
+>A program bekér a játékosok számának függvényében nevet/neveket. Ha csak egy játékost adunk a játékhoz, a program automatikusan beléptet 3 bot játékost.
 
-A commit history ne 2-3 db 100+ soros commitból álljon, hanem legyenek gyakori commitok.
-Minden önállóan is értelmes (és lehetőleg helyesen működő) változtatásról készüljön commit.
-A commit message-ben legyen röviden leírva, hogy mi változott, angolul.
-A követendő commit konvenciókról bővebb leírás olvasható [ebben a cikkben](https://cbea.ms/git-commit/).
-
-## 1. Fázis: Specifikáció elkészítése
-
-Először ki kell találni a beadandó témáját, hogy mi legyen a készítendő program célja.
-Ezt le kell írni a [docs/specification.md](docs/specification.md)-be, majd review-t kérni.
-Erre a **határidő május 26.**
-A kérdéses részek tisztázása és a jóváhagyás után kezdődhet a fejlesztés.
-
-A feladat komplexitása jelentősen haladja meg egy 2-3 órás nagy ZH feladat méretét.
-Tehát egy 3 függvényből álló ~100 soros program biztos nem éri el az elégséges szintet.
-
-A feladat lehetőleg tartalmazza az alábbiakat:
-
-- File I/O
-- `os` modult igénylő könyvtár- vagy fájlműveletek
-- `matplotlib` grafikonok
-- Hibakezelés, ahol szükséges
-
-## 2. Fázis: Implementáció
-
-### Kódstílus
-
-A program a gyökérkönyvtárból legyen futtatható a `main.py` scripttel.
-A forráskódon kívüli további szükséges fájlok kerüljenek a `data`, `img`, `reports`, stb. alkönyvtárakba.
-
-A forráskód legyen szépen tagolt, átlátható és jól dokumentált.
-A funkciók legyenek külön fájlokba (modulokba) csoportosítva, a UI és az adatkezelő réteg különüljön el.
-
-Az ismétlődő kódrészletek legyenek külön függvényekbe kiszervezve.
-A hosszú, bonyolult függvények legyenek több kisebb, egyetlen önálló részfeladatért felelős függvényekre szétbontva ([single responsibility principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)).
-
-Ne legyenek globális változók, legfeljebb globális konstansok (csupa nagybetűs névvel jelölve őket).
-
-Ahol átláthatóbb kódot eredményez, legyen comprehensionnel létrehozva a list, dict, set.
-
-A függvények paraméterei és visszatérési típusai legyenek type hintekkel ellátva.
-Többszintű vagy vegyes értékeket tároló dict-eknél lehet egyszerűsíteni, pl.: `dict[str, dict]` elegendő `dict[str, dict[str, int | str | float | list[tuple[float, float]]]]` helyett.
-A helyes típushasználatot a mypy fogja ellenőrizni, ha hibát ír, nem elfogadható a megoldás.
-
-A függvények és a változók nevei legyenek beszédesek, magától értetődőek és angol nyelvűek.
-Az indexváltozók, comprehensionben használt ciklusváltozók, file handle-ök lehetnek egybetűs (i,j,k,x,f) nevűek, de törekedni kell a kifejező nevekre.
-
-## Dokumentáció
-
-A függvények docstringjében legyen dokumentálva, hogy mi a feladatuk, mit és milyen formában várnak paraméterben, illetve adnak vissza eredményül, és hogy milyen kivételeket dobhatnak.
-Ez alól a triviálisan egyszerű feladatot ellátó függvények kivételek, ha az elnevezésekből egyértelműen kiderülnek a fenti információk.
-A docstring ne a függvénynév, a paraméterek és az eredmény felsorolása legyen, hanem adjon plusz információt az olvasónak.
-Az egységesen használandó formázás a [google styleguide](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) által javasolt formátum.
-
-A docstringekből HTML dokumentáció generálható a pdoc3 programmal (`pip install pdoc3` után) a `html` mappába:
-
-```bash
-pdoc3 --html --force .
-```
-
-Ez minden push után a GitHubon is megtörténik, és a dokumentáció elérhető lesz az uni-sopron.github.io/REPOSITORY_NAME címen.
-
-A készített program használatát, működésének magyarázatát a [`docs/user_manual.md`](docs/user_manual.md) fájlban kell leírni.
-
-### Tesztelés
-
-A felhasználói interakciót nem igénylő, adatokon műveletet végző függvényekhez készüljenek tesztek.
-Ezek lehetnek [doctest](https://docs.python.org/3/library/doctest.html) formában, vagy [pytest](https://pytest.org)-es unit tesztek, vagy vegyesen.
-
-A tesztmodulok a `tests` mappába kerüljenek.
-Itt egy példa is látható a pytest használatára.
-A doctest-re és a dokumentációra pedig az `example.py` mutat példát.
-Ezek a példafájlok kerüljenek törlésre a leadás előtt.
-
-### Külső forrásból származó kódok
-
-Fel szabad használni interneten talált kódrészleteket, de annak egyértelműen jelölni kell a forrását.
-Pl. commit message-ben, vagy kommentben.
-Az értékelésnél csak a saját kódot vesszük figyelembe.
-
-Szabad felhasználni külső csomagokat is, de akkor ezek legyenek felsorolva a `requirements.txt`-ben (soronként 1 csomagnév).
-
-Copilot, ChatGPT és társainak használata tilos.
-Indokolt esetben a szóbeli vizsgán meg kell tudni védeni a megírt kódot, hogy az saját munka volt.
-Ez kisebb módosítások megírását is magában foglalhatja.
+## Játékmenet
+1. A játékosnevek megadása után a program hozzáadja a játékosokat a játékhoz, legenerál egy kevert paklit.
+2. Minden játékosnak kiosztja a kezdőkártyákat, randomizált módon kiválasztja a kezdőjátékost, majd ezután átrendezi a játékoslistát, hogy a kezdőjátékostól induljon(Ez a körök számolásánál fontos).
+3. Amikor egy játékos sorra kerül két választása van:
+    - felhúz egy lapot, parancssorban: `0`,
+    - letesz egy lapot,
+        >A program kilistázza a játékos lapjait sorszámozva és egy sorszámot vár válaszul a *parancssorsba*. Ha olyan lapot rakna le a játékos, amely nem letehető, az adott utolsó kártyára, akkor `Can't place red(5) on blue(skip)`-hez hasonló szöveget láthatunk válaszul. Ezen kívül van még egy üzenet, amivel találkozhatunk kártya dobásnál: `[játékos neve] does't have any card to drop on [utolsó rakott kártya]. Please pull a card.(0)`
+    
+    Miután egy játékos lépett, a program a le/nem rakott kártyától függően lép tovább a következő játékosra.
+4. A játék során minden körben készül diagram játékmenetről, amelyet `img/game_stats.png` fájl megtekintésével lehet nyomon követni. (A diagram tartalmazza a játékosokat, azok kártyáinak számát körökre lebontva, így vizuálisan is következő a játékosok állása).
+5. A játék addig tart, amíg csak 1 játékos marad kártyákkal. Amennyiben elfogy a húzópakli, a játék kever mégegyet.
